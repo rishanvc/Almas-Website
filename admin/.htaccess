@@ -1,0 +1,10 @@
+RewriteEngine On
+Options -Indexes
+
+# Protect admin directory
+<FilesMatch "\.(sql|md|txt|log)$">
+    Require all denied
+</FilesMatch>
+
+ErrorDocument 404 /admin/login.php
+ErrorDocument 403 /admin/login.php

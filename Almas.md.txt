@@ -1,0 +1,1378 @@
+Software Requirements Specification (SRS)
+Project: Almas Hospital Website
+
+Version: 1.0
+Prepared For: Almas Hospital
+Prepared By: Muhammed Rishan v c
+Date: July 2026
+
+
+
+
+
+
+
+
+
+
+
+
+
+Table of Contents
+1. Introduction 
+2. Overall Description 
+3. Functional Requirements 
+4. External Interface Requirements 
+5. Data Requirements 
+6. Non-Functional Requirements 
+7. Security Requirements 
+8. Use Case Specifications 
+9. System Architecture 
+10. Database Design
+11. ER Diagram
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Chapter 1: Introduction
+1.1 Purpose
+The purpose of this Software Requirements Specification (SRS) is to define the requirements for the Almas Hospital Website. This document describes the features, functions, user roles, and overall behaviour of the system.
+The website will serve as the official online platform for Almas Hospital, allowing visitors to access hospital information, departments, doctors, facilities, health packages, careers, contact details, and appointment services.
+The system will also provide a dynamic content management system (CMS) that enables authorized users to manage website content without modifying the source code. All website content will be stored in the database and displayed dynamically.
+
+1.2 Scope
+The Almas Hospital Website is a dynamic web application designed to provide patients and visitors with easy access to hospital information and services through an interactive online platform.
+The website allows visitors to browse hospital information, explore departments and their facilities, view doctor profiles, submit appointment requests, access career opportunities, view galleries, locate branches, and contact the hospital.
+The system includes a secure administrative portal where authorized users can manage website content. Instead of updating pages manually, all website information is maintained through the content management system.
+The website follows a content approval workflow. Content Creators can create or edit content, Content Approvers review the submitted changes, and approved content is automatically published on the website. The Administrator has complete control over all users, website content, approvals, and system settings.
+
+1.3 Objectives
+The main objectives of the Almas Hospital Website are:
+* Provide an informative and user-friendly hospital website. 
+* Present complete and up-to-date information about the hospital. 
+* Allow visitors to explore hospital departments and department facilities. 
+* Display doctor profiles and healthcare services. 
+* Allow visitors to submit online appointment requests. 
+* Provide career information and online job application facilities. 
+* Display hospital branches, contact information, and location details. 
+* Manage all website content dynamically through a content management system. 
+* Implement a content approval workflow to ensure the accuracy of published information. 
+* Reduce manual website maintenance by enabling content updates through the administrative portal. 
+* Ensure secure access for different administrative users based on their roles. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Chapter 2: Overall Description
+2.1 Product Perspective
+The Almas Hospital Website Management System is a dynamic web-based application developed to provide an online platform for Almas Hospital. The system allows visitors to access hospital information, healthcare services, doctor profiles, department details, career opportunities, contact information, and other important resources.
+Unlike a static website, all website content is managed dynamically through a Content Management System (CMS). Authorized users can update website content through a secure administration panel without modifying the website's source code. This allows the hospital to keep its information accurate, up-to-date, and easy to maintain.
+The system also includes a content approval workflow to ensure that all published content is reviewed before it becomes visible on the public website.
+
+2.2 Product Functions
+The system provides the following major functions:
+Public Website
+* Display hospital information. 
+* Display departments and department facilities. 
+* Display doctor profiles. 
+* Display health packages. 
+* Display career opportunities. 
+* Display gallery images. 
+* Display branch information. 
+* Allow visitors to submit appointment requests. 
+* Allow visitors to send enquiries. 
+* Allow visitors to search website content. 
+* Display announcements and other dynamic website content. 
+Administration Portal
+* Manage users. 
+* Manage website pages and content. 
+* Manage departments. 
+* Manage department facilities. 
+* Manage doctor profiles. 
+* Manage health packages. 
+* Manage appointments. 
+* Manage careers. 
+* Manage gallery. 
+* Manage branch information. 
+* Manage contact enquiries. 
+* Manage website settings. 
+* Manage content approval requests. 
+
+2.3 User Roles
+The system consists of four user roles.
+Administrator
+The Administrator has full access to the system.
+Responsibilities include:
+* Manage users. 
+* Manage website content. 
+* Manage departments. 
+* Manage doctors. 
+* Manage appointments. 
+* Manage careers. 
+* Manage gallery. 
+* Manage branches. 
+* Manage website settings. 
+* View and manage content approval requests. 
+* Publish, update, or remove any website content. 
+
+Content Creator
+The Content Creator is responsible for creating and updating website content.
+Responsibilities include:
+* Create new website content. 
+* Edit existing website content. 
+* Update hospital information. 
+* Update department information. 
+* Update doctor profiles. 
+* Update facilities. 
+* Update career details. 
+* Update gallery. 
+* Submit content for approval. 
+* View approval status. 
+Content created or modified by the Content Creator is not published immediately. It is first submitted for approval.
+
+Content Approver
+The Content Approver reviews all submitted content before publication.
+Responsibilities include:
+* View pending approval requests. 
+* Review submitted content. 
+* Approve content. 
+* Reject content with comments. 
+* Publish approved content. 
+
+Visitor
+Visitors can access the public website without logging in.
+Visitors can:
+* Browse website information. 
+* View departments and facilities. 
+* View doctor profiles. 
+* View health packages. 
+* View careers. 
+* View gallery. 
+* Submit appointment requests. 
+* Send enquiries. 
+* Search website content. 
+
+2.4 Operating Environment
+The system is designed to run through a web browser and can be accessed using computers, laptops, tablets, and mobile devices with an internet connection.
+The website should support modern web browsers, including:
+* Google Chrome 
+* Microsoft Edge 
+* Mozilla Firefox 
+* Apple Safari 
+The administration portal is accessible only to authorized users after successful authentication.
+
+2.6 System Workflow
+The system follows a structured workflow for managing website content.
+Content Management Workflow
+1. The Content Creator creates or edits website content. 
+2. The updated content is saved with a Pending Approval status. 
+3. The Content Approver reviews the submitted content. 
+4. If approved, the content is published on the website. 
+5. If rejected, the content is returned to the Content Creator with comments for revision. 
+6. The Administrator has full authority to manage users, content, approval requests, and website settings. 
+This workflow ensures that all published content is reviewed before becoming visible on the public website.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Chapter 3: Functional Requirements
+3.1 Home Module
+Purpose
+The Home module serves as the main entry point of the Almas Hospital Website Management System. It provides visitors with an overview of the hospital, important announcements, featured services, and quick access to different sections of the website.
+Description
+The homepage displays dynamic content managed through the Content Management System (CMS). All information displayed on the homepage is retrieved from the database and can be updated through the administration portal after approval.
+Functional Requirements
+The system shall:
+* Display the hospital logo and navigation menu. 
+* Display hospital introduction. 
+* Display featured departments. 
+* Display featured doctors. 
+* Display hospital facilities. 
+* Display health packages. 
+* Display latest news or announcements. 
+* Display gallery highlights. 
+* Display branch locations. 
+* Display contact information. 
+* Display emergency contact details. 
+* Display social media links. 
+* Display footer information. 
+* Allow visitors to navigate to other website pages. 
+
+3.2 About Hospital Module
+Purpose
+The About Hospital module provides visitors with detailed information about Almas Hospital.
+Description
+The page contains the hospital's background, history, mission, vision, values, achievements, and other organizational information. The content is managed dynamically through the CMS.
+Functional Requirements
+The system shall:
+* Display hospital overview. 
+* Display hospital history. 
+* Display mission statement. 
+* Display vision statement. 
+* Display core values. 
+* Display quality policy. 
+* Display achievements and milestones. 
+* Allow authorized users to create, edit, and update all information. 
+* Publish updates only after approval. 
+
+3.3 Chairman's Message Module
+Purpose
+This module displays the Chairman's message to visitors.
+Description
+The message can be updated through the CMS and will be displayed on the website after approval.
+Functional Requirements
+The system shall:
+* Display the Chairman's message. 
+* Display the Chairman's photograph. 
+* Display designation. 
+* Allow the Content Creator to edit the message. 
+* Allow the Content Approver to approve or reject updates. 
+* Display only approved content on the website. 
+
+3.4 Departments Module
+Purpose
+The Departments module provides information about all hospital departments.
+Description
+Each department includes its description, services, facilities, and associated doctors.
+Functional Requirements
+The system shall:
+* Display all departments. 
+* Display department details. 
+* Display department images. 
+* Display department description. 
+* Display department facilities. 
+* Display doctors assigned to each department. 
+* Allow administrators to manage departments. 
+* Allow Content Creators to update department information. 
+* Publish department updates only after approval. 
+
+3.5 Department Facilities Module
+Purpose
+This module provides detailed information about the facilities available within each department.
+Description
+Each department may have one or more facilities that are displayed dynamically.
+Functional Requirements
+The system shall:
+* Display facilities available for each department. 
+* Display facility descriptions. 
+* Display facility images. 
+* Allow administrators to manage facilities. 
+* Allow Content Creators to update facility information. 
+* Publish updates after approval. 
+
+3.6 Doctor Management Module
+Purpose
+The Doctor Management module provides detailed information about doctors working in the hospital.
+Description
+Doctor information is stored in the database and displayed dynamically.
+Functional Requirements
+The system shall:
+* Display doctor list. 
+* Display doctor profile. 
+* Display specialization. 
+* Display qualifications. 
+* Display experience. 
+* Display department. 
+* Display doctor's photograph. 
+* Allow administrators to manage doctor information. 
+* Allow Content Creators to update doctor profiles. 
+* Publish updates after approval. 
+
+3.7 Health Packages Module
+Purpose
+This module provides information about health check-up packages and special healthcare services.
+Description
+Visitors can view available packages and related information.
+Functional Requirements
+The system shall:
+* Display available health packages. 
+* Display package details. 
+* Display package benefits. 
+* Allow administrators to manage packages. 
+* Allow Content Creators to update package information. 
+* Publish updates after approval. 
+
+3.8 Appointment Management Module
+Purpose
+The Appointment module allows visitors to submit appointment requests online.
+Description
+Visitors can enter their details and request appointments with the hospital.
+Functional Requirements
+The system shall:
+* Allow visitors to submit appointment requests. 
+* Store appointment information. 
+* Allow administrators to view appointment requests. 
+* Allow administrators to update appointment status. 
+* Allow administrators to manage appointments. 
+
+3.9 Gallery Module
+Purpose
+The Gallery module displays hospital images and media.
+Description
+Gallery content is managed dynamically.
+Functional Requirements
+The system shall:
+* Display gallery albums. 
+* Display gallery images. 
+* Allow administrators to manage gallery. 
+* Allow Content Creators to upload images. 
+* Publish uploaded images after approval. 
+
+3.10 Career Module
+Purpose
+The Career module provides information about available job opportunities.
+Description
+Visitors can view vacancies and submit job applications.
+Functional Requirements
+The system shall:
+* Display available job vacancies. 
+* Display job details. 
+* Allow visitors to submit job applications. 
+* Store applicant information. 
+* Allow administrators to manage vacancies. 
+* Allow Content Creators to update career information. 
+* Publish updates after approval. 
+
+3.11 Contact Module
+Purpose
+The Contact module allows visitors to communicate with the hospital.
+Functional Requirements
+The system shall:
+* Display hospital contact information. 
+* Display branch contact details. 
+* Display Google Maps location. 
+* Allow visitors to submit enquiries. 
+* Store submitted enquiries. 
+* Allow administrators to manage enquiries. 
+
+3.12 Branch Management Module
+Purpose
+This module provides information about hospital branches.
+Functional Requirements
+The system shall:
+* Display branch information. 
+* Display branch address. 
+* Display contact number. 
+* Display location. 
+* Allow administrators to manage branches. 
+* Allow Content Creators to update branch information. 
+* Publish updates after approval. 
+
+3.13 Search Module
+Purpose
+The Search module helps visitors quickly find website content.
+Functional Requirements
+The system shall:
+* Search website pages. 
+* Search departments. 
+* Search doctors. 
+* Search health packages. 
+* Display matching search results. 
+
+3.15 Dynamic Website Content Management Module
+Purpose
+This module manages all dynamic website content.
+Description
+All website content is stored in the database and displayed dynamically. Website updates can be performed through the CMS without modifying the source code.
+Functional Requirements
+The system shall:
+* Create website content. 
+* Edit website content. 
+* Delete website content. 
+* Save content in the database. 
+* Display dynamic content on the website. 
+* Track content status. 
+* Maintain content history. 
+
+3.16 Content Approval Workflow Module
+Purpose
+This module ensures that all content is reviewed before publication.
+Functional Requirements
+The system shall:
+* Allow Content Creators to submit content for approval. 
+* Allow Content Approvers to review submitted content. 
+* Approve content. 
+* Reject content with comments. 
+* Publish approved content. 
+* Notify users about approval status. 
+* Prevent unapproved content from appearing on the public website.
+
+Chapter 4: External Interface Requirements
+4.1 User Interface
+The Almas Hospital Website Management System provides a user-friendly and responsive interface that can be accessed through modern web browsers on desktop computers, tablets, and mobile devices.
+The user interface is divided into two main sections:
+Public Website
+The public website allows visitors to:
+* View hospital information. 
+* Browse departments and department facilities. 
+* View doctor profiles. 
+* View health packages. 
+* View gallery images. 
+* View career opportunities. 
+* Submit appointment requests. 
+* Send enquiries. 
+* Search website content. 
+* View branch locations and contact information. 
+Administration Portal
+The administration portal is accessible only to authorized users after successful login.
+Depending on their role, users can:
+* Manage website content. 
+* Review and approve content. 
+* Manage departments and doctors. 
+* Manage appointments. 
+* Manage careers. 
+* Manage gallery. 
+* Manage users. 
+* Manage website settings. 
+The interface should provide:
+* Simple navigation. 
+* Responsive design. 
+* Consistent layout. 
+* Easy-to-use forms. 
+* Clear error and success messages. 
+* Accessible menus and controls. 
+
+4.2 Hardware Interface
+The system does not require any special hardware to operate.
+Client Devices
+Users can access the system using:
+* Desktop computers 
+* Laptop computers 
+* Tablets 
+* Smartphones 
+Server
+The application should be deployed on a web server capable of hosting the website and database.
+
+4.3 Software Interface
+The system interacts with the following software components:
+* Web Browser 
+* Database Management System 
+* Email Service (SMTP) 
+* Google Maps 
+* WhatsApp 
+* YouTube 
+* Operating System 
+These components enable the system to provide website functionality and communicate with external services.
+
+4.4 Communication Interface
+The system communicates with users and external services through standard internet protocols.
+The communication interface includes:
+* Secure user login. 
+* Submission of appointment requests. 
+* Submission of contact enquiries. 
+* Email notifications. 
+* Google Maps integration for branch locations. 
+* WhatsApp integration for direct communication. 
+* YouTube integration for displaying hospital videos. 
+* Social media links for connecting visitors to the hospital's official social media pages. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Chapter 5: Data Requirements
+5.1 Overview
+The Almas Hospital Website Management System stores all website content and operational information in a central database. Unlike a static website, every page and its content are managed dynamically through the Content Management System (CMS).
+The database stores information related to users, website content, departments, doctors, appointments, careers, galleries, branches, and other website resources. This allows authorized users to update website information through the administration portal without modifying the application's source code.
+The system also maintains content approval information to ensure that only approved content is published on the website.
+
+5.2 Main Data Entities
+The system maintains the following major data entities:
+* Users 
+* Website Content 
+* Content Approval Requests 
+* Departments 
+* Department Facilities 
+* Doctors 
+* Health Packages 
+* Appointments 
+* Careers 
+* Job Applications 
+* Gallery 
+* Contact Enquiries 
+* Branches 
+* Website Settings 
+
+5.3 Entity Descriptions
+Users
+Stores information about users who access the administration portal.
+The system supports the following user roles:
+* Administrator 
+* Content Creator 
+* Content Approver 
+Each user has login credentials and permissions based on their assigned role.
+
+Website Content
+Stores all dynamic content displayed on the website.
+Examples include:
+* Homepage content 
+* About Hospital 
+* Chairman's Message 
+* Mission & Vision 
+* Announcements 
+* Policies 
+* Footer content 
+* Other website pages 
+All content is managed through the CMS.
+
+Content Approval Requests
+Stores information related to content approval.
+This includes:
+* Submitted content 
+* Request date 
+* Content Creator 
+* Content Approver 
+* Approval status 
+* Approval comments 
+* Approval date 
+This ensures that content is reviewed before publication.
+
+Departments
+Stores information about hospital departments.
+Each department includes:
+* Department name 
+* Description 
+* Image 
+* Related facilities 
+* Associated doctors 
+
+Department Facilities
+Stores facilities available within each department.
+Examples include:
+* Medical equipment 
+* Specialized services 
+* Laboratory facilities 
+* Diagnostic facilities 
+* Patient care facilities 
+Each facility is linked to its respective department.
+
+Doctors
+Stores information about doctors working at the hospital.
+Each doctor record includes:
+* Doctor name 
+* Photograph 
+* Department 
+* Specialization 
+* Qualification 
+* Experience 
+* Professional profile 
+
+Health Packages
+Stores details of health check-up packages offered by the hospital.
+Each package includes:
+* Package name 
+* Description 
+* Benefits 
+* Package image 
+
+Appointments
+Stores appointment requests submitted by visitors.
+Appointment information includes:
+* Visitor details 
+* Contact information 
+* Preferred department 
+* Preferred doctor (if applicable) 
+* Appointment date 
+* Appointment status 
+
+Careers
+Stores job opportunities published by the hospital.
+Each job posting includes:
+* Job title 
+* Department 
+* Description 
+* Qualification requirements 
+* Application deadline 
+
+Job Applications
+Stores applications submitted by job applicants.
+Information includes:
+* Applicant details 
+* Resume 
+* Applied position 
+* Application date 
+
+Gallery
+Stores images displayed throughout the website.
+Gallery information includes:
+* Image 
+* Category 
+* Description 
+* Upload date 
+
+Contact Enquiries
+Stores enquiries submitted through the contact page.
+Information includes:
+* Visitor name 
+* Contact details 
+* Subject 
+* Message 
+* Submission date 
+
+Branches
+Stores information about hospital branches.
+Each branch includes:
+* Branch name 
+* Address 
+* Contact details 
+* Email address 
+* Google Maps location 
+
+Website Settings
+Stores general website information.
+Examples include:
+* Website name 
+* Logo 
+* Contact information 
+* Social media links 
+* YouTube link 
+* WhatsApp number 
+* Email address 
+* Footer information 
+
+5.4 Data Relationships
+The system maintains relationships between different data entities to ensure consistency and accuracy.
+Examples include:
+* Each doctor belongs to a department. 
+* Each department can have multiple facilities. 
+* Each department can have multiple doctors. 
+* Each Content Approval Request is associated with a Content Creator and a Content Approver. 
+* Each job application belongs to a career posting. 
+* Each appointment request may be associated with a department and, if selected, a doctor. 
+* Website content is managed by authorized users according to their roles. 
+These relationships help maintain organized and reliable information throughout the system.
+
+5.5 Data Storage Requirements
+The system shall:
+* Store all website content in the database. 
+* Store user information securely. 
+* Store appointment requests. 
+* Store career information and job applications. 
+* Store doctor and department information. 
+* Store department facilities. 
+* Store gallery images and related information. 
+* Store contact enquiries. 
+* Store branch information. 
+* Store website settings. 
+* Store content approval history and status. 
+* Maintain data integrity and consistency. 
+* Prevent unauthorized modification of stored data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Chapter 6: Non-Functional Requirements
+6.1 Performance
+The system should provide fast and efficient performance to ensure a smooth user experience.
+The system shall:
+* Load web pages within an acceptable response time under normal usage. 
+* Support multiple users accessing the website simultaneously. 
+* Process appointment requests and enquiries without noticeable delay. 
+* Retrieve and display dynamic content efficiently. 
+* Optimize images and other media for faster page loading. 
+
+6.2 Reliability
+The system should provide reliable services with minimal interruptions.
+The system shall:
+* Operate continuously without unexpected failures. 
+* Maintain consistent performance during normal operation. 
+* Ensure that stored data remains accurate and reliable. 
+* Recover from unexpected system failures with minimal data loss. 
+
+6.3 Availability
+The website should be available whenever users need to access it.
+The system shall:
+* Be accessible 24 hours a day, 7 days a week, except during scheduled maintenance. 
+* Minimize system downtime. 
+* Display appropriate maintenance messages when the website is temporarily unavailable. 
+
+6.4 Scalability
+The system should be capable of supporting future growth.
+The system shall:
+* Support the addition of new departments, doctors, branches, and website pages. 
+* Allow new features and modules to be added with minimal changes to the existing system. 
+* Handle increasing amounts of website content and user activity efficiently. 
+
+6.5 Usability
+The system should be easy to use for both visitors and administrative users.
+The system shall:
+* Provide a simple and user-friendly interface. 
+* Use clear navigation menus and page layouts. 
+* Display meaningful success and error messages. 
+* Ensure that administrative functions are easy to understand and operate. 
+* Require minimal training for authorized users. 
+
+6.6 Maintainability
+The system should be easy to maintain and update.
+The system shall:
+* Allow website content to be updated through the Content Management System. 
+* Support easy maintenance of departments, doctors, careers, galleries, and other website information. 
+* Allow administrators to manage the website without modifying the application's source code. 
+* Be designed to support future updates and enhancements. 
+
+6.7 Accessibility
+The website should be accessible to a wide range of users.
+The system shall:
+* Support access from desktop computers, laptops, tablets, and smartphones. 
+* Display content clearly on different screen sizes. 
+* Use readable fonts and appropriate color contrast. 
+* Provide consistent navigation across all pages. 
+
+6.8 Compatibility
+The system should function correctly across commonly used platforms and browsers.
+The system shall:
+* Support modern web browsers, including Google Chrome, Mozilla Firefox, Microsoft Edge, and Apple Safari. 
+* Display website content consistently across supported browsers. 
+* Support different screen resolutions and device types. 
+
+6.9 Data Integrity
+The system should maintain the accuracy and consistency of stored information.
+The system shall:
+* Store all website content securely. 
+* Prevent unauthorized modification of data. 
+* Ensure that only approved content is published on the public website. 
+* Maintain consistency between related data, such as departments, doctors, and facilities. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Chapter 7: Security Requirements
+7.1 Overview
+The Almas Hospital Website Management System shall implement appropriate security measures to protect website data, user accounts, and system resources. The system shall ensure that only authorized users can access administrative functions and that all website content is managed securely.
+
+7.2 User Authentication
+The system shall verify the identity of users before allowing access to the administration portal.
+The system shall:
+* Allow only registered users to log in. 
+* Authenticate users using a valid username or email address and password. 
+* Prevent unauthorized users from accessing the administration portal. 
+* Allow users to log out securely. 
+
+7.3 User Authorization
+The system shall control user access based on assigned roles.
+The system shall support the following roles:
+* Administrator 
+* Content Creator 
+* Content Approver 
+Each role shall have access only to the functions assigned to it.
+Administrator
+The Administrator shall have full access to all modules and system settings.
+Content Creator
+The Content Creator shall be allowed to:
+* Create website content. 
+* Edit website content. 
+* Submit content for approval. 
+* View the status of submitted requests. 
+The Content Creator shall not publish content directly.
+Content Approver
+The Content Approver shall be allowed to:
+* Review submitted content. 
+* Approve content. 
+* Reject content. 
+* Publish approved content. 
+The Content Approver shall not manage system users or website settings unless authorized by the Administrator.
+
+7.4 Password Security
+The system shall protect user passwords.
+The system shall:
+* Store passwords securely using encryption or hashing. 
+* Prevent passwords from being displayed in plain text. 
+* Allow users to change their passwords. 
+* Require strong passwords for administrative users. 
+
+7.5 Session Management
+The system shall manage user sessions securely.
+The system shall:
+* Create a secure session after successful login. 
+* End the session after logout. 
+* Prevent unauthorized access to protected pages. 
+* Redirect unauthenticated users to the login page. 
+
+7.6 Content Approval Security
+The content approval workflow shall ensure that only approved information is published on the website.
+The system shall:
+* Save newly created or edited content with a Pending Approval status. 
+* Prevent pending content from appearing on the public website. 
+* Allow only the Content Approver or Administrator to approve content. 
+* Publish content only after approval. 
+* Record the approval status of each content update. 
+
+7.7 Input Validation
+The system shall validate all user input before processing.
+The system shall:
+* Validate required fields. 
+* Validate email addresses. 
+* Validate phone numbers. 
+* Restrict invalid characters where necessary. 
+* Display appropriate validation messages for incorrect input. 
+
+7.8 File Upload Security
+The system shall secure uploaded files.
+The system shall:
+* Allow only supported file formats. 
+* Restrict oversized files. 
+* Store uploaded files securely. 
+* Prevent unauthorized file access. 
+
+7.9 Data Protection
+The system shall protect all stored information.
+The system shall:
+* Prevent unauthorized modification of data. 
+* Protect user information. 
+* Protect appointment records. 
+* Protect career applications. 
+* Protect website content. 
+* Protect uploaded documents and images. 
+
+
+
+
+
+Chapter 8: Use Case Specifications
+8.1 Overview
+This chapter describes the interactions between the users and the Almas Hospital Website Management System. It outlines the main actions that each user can perform and how the system responds to those actions.
+The system includes four types of users:
+* Administrator 
+* Content Creator 
+* Content Approver 
+* Visitor 
+
+8.2 Administrator Use Case
+Use Case Name
+Manage Website
+Actor
+Administrator
+Description
+The Administrator manages the overall website and has full control over all modules, users, and system settings.
+Preconditions
+* The Administrator must be registered. 
+* The Administrator must log in successfully. 
+Main Flow
+1. Log in to the administration portal. 
+2. Access the dashboard. 
+3. Manage users. 
+4. Manage website content. 
+5. Manage departments. 
+6. Manage department facilities. 
+7. Manage doctors. 
+8. Manage appointments. 
+9. Manage careers. 
+10. Manage gallery. 
+11. Manage branches. 
+12. Manage website settings. 
+13. View content approval requests. 
+14. Log out. 
+Postconditions
+* Website information is updated. 
+* Changes are saved successfully. 
+
+8.3 Content Creator Use Case
+Use Case Name
+Create and Update Website Content
+Actor
+Content Creator
+Description
+The Content Creator creates new website content or edits existing content and submits it for approval.
+Preconditions
+* The Content Creator must log in successfully. 
+Main Flow
+1. Log in. 
+2. Open the required content page. 
+3. Create or edit content. 
+4. Upload images or documents if required. 
+5. Save the changes. 
+6. Submit the content for approval. 
+7. View the approval status. 
+Postconditions
+* The content is stored with a Pending Approval status. 
+* The content is not visible on the public website until approved. 
+
+8.4 Content Approver Use Case
+Use Case Name
+Review Website Content
+Actor
+Content Approver
+Description
+The Content Approver reviews all content submitted by Content Creators and decides whether it should be published.
+Preconditions
+* The Content Approver must log in successfully. 
+* Pending approval requests must be available. 
+Main Flow
+1. Log in. 
+2. View pending approval requests. 
+3. Review the submitted content. 
+4. Approve or reject the request. 
+5. If rejected, provide comments. 
+6. Save the decision. 
+Postconditions
+* Approved content is published. 
+* Rejected content is returned to the Content Creator for revision. 
+
+8.5 Visitor Use Case
+Use Case Name
+Browse Website
+Actor
+Visitor
+Description
+Visitors access the website to view information and use the services provided by the hospital.
+Preconditions
+* Internet connection is available. 
+Main Flow
+1. Open the website. 
+2. Browse homepage. 
+3. View hospital information. 
+4. Browse departments and facilities. 
+5. View doctor profiles. 
+6. View health packages. 
+7. View gallery. 
+8. View careers. 
+9. Submit an appointment request. 
+10. Send an enquiry. 
+11. Search website content. 
+Postconditions
+* The visitor receives the requested information. 
+* Appointment requests and enquiries are stored successfully. 
+
+8.6 Content Approval Workflow Use Case
+Use Case Name
+Approve Website Content
+Actors
+* Content Creator 
+* Content Approver 
+* Administrator 
+Description
+This use case ensures that only approved content is published on the website.
+Preconditions
+* Content has been created or edited. 
+* The content has been submitted for approval. 
+Main Flow
+1. Content Creator submits new or updated content. 
+2. The system stores the content with Pending Approval status. 
+3. The Content Approver reviews the content. 
+4. The Content Approver approves or rejects the content. 
+5. If approved, the system publishes the content. 
+6. If rejected, the system returns the content to the Content Creator with comments. 
+7. The Content Creator makes the required changes and resubmits the content. 
+Postconditions
+* Approved content becomes visible on the website. 
+* Rejected content remains unpublished until approved. 
+
+8.7 Appointment Request Use Case
+Use Case Name
+Submit Appointment Request
+Actor
+Visitor
+Description
+Visitors can request an appointment through the website.
+Preconditions
+* The appointment page is accessible. 
+Main Flow
+1. Open the appointment page. 
+2. Enter personal information. 
+3. Select a department. 
+4. Select a preferred doctor (if applicable). 
+5. Choose the preferred appointment date. 
+6. Submit the request. 
+7. The system stores the appointment request. 
+Postconditions
+* The appointment request is successfully saved. 
+* The administrator can view and manage the request. 
+
+8.8 Contact Enquiry Use Case
+Use Case Name
+Submit Contact Enquiry
+Actor
+Visitor
+Description
+Visitors can send enquiries to the hospital through the contact page.
+Preconditions
+* The contact page is available. 
+Main Flow
+1. Open the contact page. 
+2. Enter the required details. 
+3. Type the enquiry. 
+4. Submit the enquiry. 
+5. The system stores the enquiry. 
+Postconditions
+* The enquiry is successfully recorded. 
+* The administrator can review the enquiry.
+
+
+
+
+
+
+
+
+
+
+Chapter 9: System Architecture
+9.1 Overview
+The Almas Hospital Website Management System is a web-based application that allows visitors to access hospital information and enables authorized users to manage website content through a secure administration portal.
+The system follows a centralized architecture where all website information is stored in a database and displayed dynamically on the public website. Authorized users can create, edit, review, approve, and publish content through the Content Management System (CMS).
+
+9.2 System Components
+The system consists of the following main components:
+Public Website
+The public website is accessible to all visitors without requiring a login. It provides access to hospital information and online services.
+It includes:
+* Home 
+* About Hospital 
+* Chairman's Message 
+* Mission & Vision 
+* Departments 
+* Department Facilities 
+* Doctors 
+* Health Packages 
+* Gallery 
+* Careers 
+* Contact 
+* Branches 
+* Appointment Request 
+* Search 
+
+Administration Portal
+The administration portal is accessible only to authorized users.
+It provides modules for:
+* User Management 
+* Dynamic Website Content Management 
+* Content Approval Management 
+* Department Management 
+* Doctor Management 
+* Appointment Management 
+* Career Management 
+* Gallery Management 
+* Contact Enquiry Management 
+* Website Settings 
+
+Database
+The database stores all information required by the system.
+This includes:
+* User information 
+* Website content 
+* Departments 
+* Department facilities 
+* Doctors 
+* Appointments 
+* Careers 
+* Job applications 
+* Gallery 
+* Contact enquiries 
+* Branch information 
+* Website settings 
+* Content approval records 
+All website pages retrieve their information dynamically from the database.
+
+9.3 Dynamic Content Management
+The website uses a dynamic Content Management System (CMS) to manage all website information.
+Instead of modifying the application's source code, authorized users can update website content through the administration portal.
+The CMS allows users to manage:
+* Homepage content 
+* Hospital information 
+* Chairman's Message 
+* Mission & Vision 
+* Departments 
+* Department Facilities 
+* Doctors 
+* Health Packages 
+* Gallery 
+* Careers 
+* Branches 
+* Contact information 
+* Website settings 
+Any approved changes are automatically reflected on the public website.
+
+9.4 Content Approval Workflow
+To maintain the accuracy and quality of published information, the system includes a content approval workflow.
+The workflow is as follows:
+1. A Content Creator creates or edits website content. 
+2. The content is saved with a Pending Approval status. 
+3. A Content Approver reviews the submitted content. 
+4. If approved, the content is published on the website. 
+5. If rejected, the content is returned to the Content Creator with comments for revision. 
+6. The Administrator has full control over all content and approval activities. 
+This workflow ensures that only reviewed and approved content is displayed to visitors.
+
+9.5 Module Interaction
+The modules within the system work together to provide a consistent user experience.
+* Visitors interact with the public website to access hospital information and services. 
+* Content Creators manage and update website content. 
+* Content Approvers review and publish approved content. 
+* Administrators manage users, content, system settings, and all operational activities. 
+* The database stores and provides information to all modules as required. 
+
+
+9.7 Content Publishing Process
+The content publishing process ensures that only approved information appears on the public website.
+The process is:
+1. Content Creator creates or edits content. 
+2. Content is submitted for approval. 
+3. Content Approver reviews the content. 
+4. Approved content is published. 
+5. Rejected content is returned for modification. 
+6. Published content becomes visible on the website immediately after approval.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Database Design
+Table 1: users
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementUnique user IDnameVARCHAR(100)NOT NULLUser's full nameemailVARCHAR(150)UNIQUE, NOT NULLLogin emailpasswordVARCHAR(255)NOT NULLEncrypted passwordroleENUM('Administrator','Content Creator','Content Approver')NOT NULLUser rolephoneVARCHAR(20)NULLContact numberprofile_imageVARCHAR(255)NULLProfile image pathstatusENUM('Active','Inactive')DEFAULT 'Active'Account statuscreated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPRecord creation dateupdated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMPLast updated date
+
+
+
+
+
+
+
+Table 2: website_contents
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementContent IDpage_nameVARCHAR(100)NOT NULLPage nametitleVARCHAR(255)NOT NULLContent titlecontentLONGTEXTNOT NULLPage contentfeatured_imageVARCHAR(255)NULLImage pathstatusENUM('Draft','Pending','Published')DEFAULT 'Draft'Content statuscreated_byINTForeign Key ? users.idContent creatorupdated_byINTForeign Key ? users.idLast editorapproved_byINTForeign Key ? users.idContent approvercreated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPCreated dateupdated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMPUpdated date
+
+
+
+
+
+
+
+
+
+
+Table 3: approval_requests
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementRequest IDentity_typeENUM('website_content','department','department_facility','doctor','gallery','patient_story','career','branch','website_setting')NOT NULLModule where the change was madeentity_idINTNOT NULLID of the related recordrequested_byINTForeign Key ? users.idContent Creatorapproved_byINTForeign Key ? users.idContent ApproverstatusENUM('Pending','Approved','Rejected')DEFAULT 'Pending'Approval statuscommentsTEXTNULLApprover commentsrequest_dateTIMESTAMPDEFAULT CURRENT_TIMESTAMPRequest submission dateapproval_dateTIMESTAMPNULLApproval date
+
+Table 4: departments
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementDepartment IDdepartment_nameVARCHAR(150)NOT NULLDepartment namedescriptionLONGTEXTNOT NULLDepartment detailsimageVARCHAR(255)NULLDepartment imagestatusENUM('Active','Inactive')DEFAULT 'Active'Department statuscreated_byINTForeign Key ? users.idCreated byapproved_byINTForeign Key ? users.idApproved bycreated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPCreated dateupdated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMPUpdated date
+
+
+Table 5: department_facilities
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementFacility IDdepartment_idINTForeign Key ? departments.idRelated departmentfacility_nameVARCHAR(200)NOT NULLFacility namedescriptionTEXTNOT NULLFacility descriptionimageVARCHAR(255)NULLFacility imagecreated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPCreated dateupdated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMPUpdated date
+
+
+Table 6: doctors
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementUnique doctor IDdepartment_idINTForeign Key ? departments.idDepartment of the doctornameVARCHAR(150)NOT NULLDoctor's namedesignationVARCHAR(150)NULLDesignationqualificationVARCHAR(255)NOT NULLEducational qualificationsspecializationVARCHAR(255)NOT NULLMedical specializationexperienceVARCHAR(100)NULLYears of experienceprofileLONGTEXTNULLDoctor profile/biographyphotoVARCHAR(255)NULLDoctor photostatusENUM('Active','Inactive')DEFAULT 'Active'Record statuscreated_byINTFK ? users.idCreated byapproved_byINTFK ? users.idApproved bycreated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPCreated dateupdated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMPUpdated dateTable 7: appointments
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementAppointment IDpatient_nameVARCHAR(150)NOT NULLPatient nameemailVARCHAR(150)NULLEmailphoneVARCHAR(20)NOT NULLContact numberdepartment_idINTFK ? departments.idSelected departmentdoctor_idINTFK ? doctors.idSelected doctorappointment_dateDATENOT NULLPreferred datemessageTEXTNULLAdditional notesstatusENUM('Pending','Confirmed','Cancelled','Completed')DEFAULT 'Pending'Appointment statuscreated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPSubmission date
+
+Table 8: gallery
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementGallery IDtitleVARCHAR(255)NOT NULLImage titledescriptionTEXTNULLImage descriptionimageVARCHAR(255)NOT NULLImage pathstatusENUM('Active','Inactive')DEFAULT 'Active'Statuscreated_byINTFK ? users.idCreated byapproved_byINTFK ? users.idApproved bycreated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPCreated dateupdated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMPUpdated date
+
+
+Table 9: patient_stories
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementStory IDpatient_nameVARCHAR(150)NOT NULLPatient namevideo_urlVARCHAR(500)NOT NULLYouTube video URLstatusENUM('Active','Inactive')DEFAULT 'Active'Display statuscreated_byINTForeign Key ? users.idCreated byapproved_byINTForeign Key ? users.idApproved bycreated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPCreated dateupdated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMPUpdated date
+
+Table 10: careers
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementCareer IDjob_titleVARCHAR(255)NOT NULLJob titledepartmentVARCHAR(150)NULLDepartmentdescriptionLONGTEXTNOT NULLJob descriptionqualificationTEXTNULLRequired qualificationdeadlineDATENULLApplication deadlinestatusENUM('Open','Closed')DEFAULT 'Open'Vacancy statuscreated_byINTFK ? users.idCreated byapproved_byINTFK ? users.idApproved bycreated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPCreated dateupdated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMPUpdated date
+
+Table 11: job_applications
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementApplication IDcareer_idINTFK ? careers.idApplied jobapplicant_nameVARCHAR(150)NOT NULLApplicant nameemailVARCHAR(150)NOT NULLEmailphoneVARCHAR(20)NOT NULLPhone numberresumeVARCHAR(255)NOT NULLResume filecover_letterTEXTNULLCover letterapplied_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPApplication date
+
+Table 12: contact_enquiries
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementEnquiry IDenquiry_typeENUM('General','International Patient','Home Care')NOT NULLType of enquirynameVARCHAR(150)NOT NULLVisitor nameemailVARCHAR(150)NULLEmailphoneVARCHAR(20)NULLContact numbersubjectVARCHAR(255)NOT NULLSubjectmessageTEXTNOT NULLEnquiry messagestatusENUM('Pending','Resolved')DEFAULT 'Pending'Enquiry statuscreated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPSubmission date
+
+Table 13: branches
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementBranch IDbranch_nameVARCHAR(150)NOT NULLBranch nameaddressTEXTNOT NULLBranch addressphoneVARCHAR(20)NULLContact numberemailVARCHAR(150)NULLEmailgoogle_mapVARCHAR(500)NULLGoogle Maps linkimageVARCHAR(255)NULLBranch imagestatusENUM('Active','Inactive')DEFAULT 'Active'Statuscreated_byINTFK ? users.idCreated byapproved_byINTFK ? users.idApproved bycreated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPCreated dateupdated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMPUpdated date
+
+Table 14: website_settings
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementSetting IDwebsite_nameVARCHAR(255)NOT NULLWebsite namelogoVARCHAR(255)NULLWebsite logoemailVARCHAR(150)NULLContact emailphoneVARCHAR(20)NULLContact phoneaddressTEXTNULLHospital addressfacebookVARCHAR(500)NULLFacebook linkinstagramVARCHAR(500)NULLInstagram linkyoutubeVARCHAR(500)NULLYouTube linkwhatsappVARCHAR(20)NULLWhatsApp numberfooter_textTEXTNULLFooter contentupdated_byINTFK ? users.idLast updated byupdated_atTIMESTAMPDEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMPLast updated date
+
+Table 15: media_library
+
+Field NameData TypeConstraintsDescriptionidINTPrimary Key, Auto IncrementMedia IDfile_nameVARCHAR(255)NOT NULLOriginal file namefile_pathVARCHAR(255)NOT NULLFile locationfile_typeENUM('Image','Video','Document')NOT NULLMedia typeuploaded_byINTFK ? users.idUploaded byuploaded_atTIMESTAMPDEFAULT CURRENT_TIMESTAMPUpload date
+
+
+ER Diagram
+
+
