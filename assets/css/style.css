@@ -1695,3 +1695,160 @@ select.form-control { appearance: auto; }
   }
 }
 
+/* ===== About Page ===== */
+.about-layout {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.about-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+.about-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin-bottom: 32px;
+}
+
+.about-text-wrap::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.about-featured-img {
+  float: right;
+  width: 420px;
+  margin: 0 0 20px 32px;
+  border-radius: var(--br);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.about-featured-img img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.about-section-block {
+  margin-top: 52px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border-color);
+}
+
+.about-section-heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin-bottom: 20px;
+}
+
+.about-gallery-block .about-section-heading {
+  text-align: center;
+}
+
+.about-gallery-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+.about-gallery-item {
+  flex: 0 0 auto;
+  max-width: 672px;
+  margin: 0;
+  border-radius: var(--br);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.about-gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.about-section-inner {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.about-section-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.about-section-img {
+  width: 340px;
+  flex-shrink: 0;
+  border-radius: var(--br);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.about-section-img img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.about-mission-block .about-section-heading {
+  color: var(--primary);
+}
+
+.about-vision-block .about-section-heading {
+  color: var(--dark-blue);
+}
+
+@media (max-width: 992px) {
+  .about-featured-img {
+    float: none;
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto 24px;
+  }
+
+  .about-section-inner {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .about-section-img {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .about-vision-block .about-section-inner {
+    flex-direction: column-reverse;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-title {
+    font-size: 1.6rem;
+  }
+
+  .about-gallery-grid {
+    gap: 16px;
+  }
+
+  .about-gallery-item {
+    max-width: 100%;
+  }
+
+  .about-section-block {
+    margin-top: 36px;
+    padding-top: 28px;
+  }
+}
+
