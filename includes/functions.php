@@ -242,6 +242,24 @@ function canUserAccessDepartment($userId, $deptId) {
     return in_array((int)$deptId, $assignedIds);
 }
 
+function nl2p($text) {
+    $trimmed = trim($text);
+    if ($trimmed === '') return '';
+    // If content already contains block-level HTML, output as-is (it's already formatted)
+    if (preg_match('/<(p|div|h[1-6]|ul|ol|li|table|section|figure|blockquote|pre)\b/i', $trimmed)) {
+        return $trimmed;
+    }
+    $paragraphs = preg_split('/\n\s*\n/', $trimmed);
+    $output = '';
+    foreach ($paragraphs as $p) {
+        $p = trim($p);
+        if ($p !== '') {
+            $output .= '<p>' . nl2br($p) . '</p>';
+        }
+    }
+    return $output;
+}
+
 function redirect($url) {
     header('Location: ' . $url);
     exit;

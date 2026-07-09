@@ -6,9 +6,32 @@ if (!hasAnyRole(['Administrator', 'Content Creator', 'Content Approver'])) { red
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     $pageName = sanitize($_POST['page_name']);
     $title = sanitize($_POST['title']);
-    $content = $_POST['content'];
+    $content = $_POST['content'] ?? '';
     $contentId = isset($_POST['content_id']) ? (int)$_POST['content_id'] : 0;
     $image = '';
+
+    // Build content from blocks when using the About block editor
+    if ($pageName === 'about' && isset($_POST['block_content']) && is_array($_POST['block_content'])) {
+        $headings = $_POST['block_heading'] ?? [];
+        $contents = $_POST['block_content'] ?? [];
+        $builtHtml = '';
+        foreach ($contents as $i => $blockContent) {
+            $blockContent = trim($blockContent);
+            if ($blockContent === '') continue;
+            $heading = isset($headings[$i]) ? trim($headings[$i]) : '';
+            if ($heading) {
+                $builtHtml .= '<h3 class="about-block-heading">' . htmlspecialchars($heading, ENT_QUOTES, 'UTF-8') . "</h3>\n";
+            }
+            $paragraphs = preg_split('/\n\s*\n/', $blockContent);
+            foreach ($paragraphs as $p) {
+                $p = trim($p);
+                if ($p !== '') {
+                    $builtHtml .= '<p>' . nl2br(htmlspecialchars($p, ENT_QUOTES, 'UTF-8')) . "</p>\n";
+                }
+            }
+        }
+        $content = $builtHtml;
+    }
 
     if (!empty($_FILES['featured_image']['name'])) {
         $upload = uploadFile($_FILES['featured_image'], UPLOAD_PATH . '/gallery');
@@ -85,12 +108,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
         // Handle mission and vision featured images
         foreach (['mission', 'vision'] as $section) {
             $field = $section . '_image';
+            $removeField = $section . '_remove_image';
             if (!empty($_FILES[$field]['name'])) {
                 $upload = uploadFile($_FILES[$field], UPLOAD_PATH . '/gallery');
                 if ($upload['success']) {
                     $subSections['about_' . $section]['image'] = $upload['path'];
                 }
+            } elseif (!empty($_POST[$removeField])) {
+                $subSections['about_' . $section]['remove_image'] = true;
             }
+        }
+
+        // Handle gallery image removals
+        $removeGallery = isset($_POST['remove_gallery']) ? $_POST['remove_gallery'] : [];
+        if (!empty($removeGallery) && is_array($removeGallery)) {
+            $galleryContent = $subSections['about_gallery']['content'];
+            preg_match_all('/<figure[^>]*>.*?<\/figure>/s', $galleryContent, $matches);
+            $existingFigures = $matches[0] ?? [];
+            $filteredContent = '';
+            foreach ($existingFigures as $idx => $figure) {
+                if (!in_array((string)$idx, $removeGallery, true)) {
+                    $filteredContent .= $figure . "\n";
+                }
+            }
+            $subSections['about_gallery']['content'] = trim($filteredContent);
         }
 
         $subStatus = hasRole('Administrator') ? 'Published' : 'Pending';
@@ -105,7 +146,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
 
             if ($existing) {
                 $subId = $existing['id'];
-                if ($subImage) {
+                if (!empty($data['remove_image'])) {
+                    $stmt = mysqli_prepare($conn, "UPDATE website_contents SET title=?, content=?, featured_image='', status=?, updated_by=? WHERE id=?");
+                    mysqli_stmt_bind_param($stmt, 'sssii', $subTitle, $subContent, $subStatus, $_SESSION['user_id'], $subId);
+                } elseif ($subImage) {
                     $stmt = mysqli_prepare($conn, "UPDATE website_contents SET title=?, content=?, featured_image=?, status=?, updated_by=? WHERE id=?");
                     mysqli_stmt_bind_param($stmt, 'ssssii', $subTitle, $subContent, $subImage, $subStatus, $_SESSION['user_id'], $subId);
                 } else {
@@ -129,6 +173,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
                 createApprovalRequest('website_content', $subId, $_SESSION['user_id']);
             }
         }
+    }
+
+    // Create approval request for the main record when submitted by Content Creator
+    if ($status === 'Pending' && !hasRole('Administrator')) {
+        createApprovalRequest('website_content', $newId, $_SESSION['user_id']);
     }
 
     $anyPending = ($status === 'Pending' && !hasRole('Administrator'));
@@ -188,6 +237,41 @@ if (isset($_GET['edit'])) {
         $res = mysqli_query($conn, "SELECT * FROM website_contents WHERE page_name='about_vision' LIMIT 1");
         $aboutVision = mysqli_fetch_assoc($res);
     }
+
+    // Parse stored content into blocks for the block editor
+    $aboutBlocks = [];
+    if ($editContent && $editContent['page_name'] === 'about' && !empty(trim($editContent['content'] ?? ''))) {
+        $stored = $editContent['content'];
+        if (preg_match('/<h3 class="about-block-heading">/i', $stored)) {
+            // Parse block format: <h3>heading</h3><p>content</p>...
+            $parts = preg_split('/<h3 class="about-block-heading">(.*?)<\/h3>/s', $stored, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+            $currentHeading = '';
+            foreach ($parts as $i => $part) {
+                $part = trim($part);
+                if ($i % 2 === 0) {
+                    // Even index: content part
+                    $text = preg_replace('/<\/p>\s*<p>/', "\n\n", $part);
+                    $text = preg_replace('/<br\s*\/?>/', "\n", $text);
+                    $text = trim(html_entity_decode(strip_tags($text), ENT_QUOTES, 'UTF-8'));
+                    if ($i === 0 && $currentHeading === '') {
+                        $aboutBlocks[] = ['heading' => '', 'content' => $text];
+                    } else {
+                        $aboutBlocks[] = ['heading' => $currentHeading, 'content' => $text];
+                        $currentHeading = '';
+                    }
+                } else {
+                    // Odd index: heading text
+                    $currentHeading = trim(html_entity_decode(strip_tags($part), ENT_QUOTES, 'UTF-8'));
+                }
+            }
+        } else {
+            // Plain text or HTML without block headings — single block
+            $text = preg_replace('/<\/p>\s*<p>/', "\n\n", $stored);
+            $text = preg_replace('/<br\s*\/?>/', "\n", $text);
+            $text = trim(html_entity_decode(strip_tags($text), ENT_QUOTES, 'UTF-8'));
+            $aboutBlocks[] = ['heading' => '', 'content' => $text];
+        }
+    }
 }
 $result = mysqli_query($conn, "SELECT wc.*, u.name as creator FROM website_contents wc LEFT JOIN users u ON wc.created_by = u.id WHERE wc.page_name NOT IN ('about_gallery','about_mission','about_vision') ORDER BY wc.updated_at DESC");
 ?>
@@ -235,7 +319,6 @@ $result = mysqli_query($conn, "SELECT wc.*, u.name as creator FROM website_conte
 
         <!-- About Us tabbed multi-section form -->
         <div id="about-tabs" style="display:none;">
-            <input type="hidden" name="page_name" value="about">
             <div class="about-tab-nav">
                 <button type="button" class="about-tab-btn active" data-tab="about-content">About Content</button>
                 <button type="button" class="about-tab-btn" data-tab="about-gallery">Gallery</button>
@@ -247,15 +330,62 @@ $result = mysqli_query($conn, "SELECT wc.*, u.name as creator FROM website_conte
             <div class="about-tab-panel active" id="tab-about-content">
                 <div class="about-tab-header">
                     <h4>About Content</h4>
-                    <p>Main description paragraphs for the About Us page.</p>
+                    <p>Add content blocks with optional headings. Each block can have a heading and multiple paragraphs.</p>
                 </div>
                 <div class="form-group">
                     <label>Title</label>
                     <input type="text" name="title" class="form-control" value="<?= sanitizeInput($editContent['title'] ?? '') ?>">
                 </div>
                 <div class="form-group">
-                    <label>Content</label>
-                    <textarea name="content" class="form-control" style="min-height:300px;"><?= sanitizeInput($editContent['content'] ?? '') ?></textarea>
+                    <label>Content Blocks</label>
+                    <div id="about-blocks">
+                        <?php if (!empty($aboutBlocks)): ?>
+                            <?php foreach ($aboutBlocks as $idx => $block): ?>
+                            <div class="about-block-item">
+                                <div class="about-block-header">
+                                    <span class="about-block-label">Block <?= $idx + 1 ?></span>
+                                    <div class="about-block-actions">
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="moveBlock(this, -1)" title="Move up">&uarr;</button>
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="moveBlock(this, 1)" title="Move down">&darr;</button>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="removeBlock(this)" title="Delete">&times;</button>
+                                    </div>
+                                </div>
+                                <div class="about-block-body">
+                                    <div class="form-group">
+                                        <label>Heading <small style="color:#94a3b8;font-weight:400;">(optional)</small></label>
+                                        <input type="text" name="block_heading[]" class="form-control" value="<?= sanitizeInput($block['heading']) ?>" placeholder="e.g. Our History, Our Team...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Content</label>
+                                        <textarea name="block_content[]" class="form-control" style="min-height:150px;" placeholder="Enter paragraph text. Use blank lines to separate paragraphs."><?= sanitizeInput($block['content']) ?></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="about-block-item">
+                                <div class="about-block-header">
+                                    <span class="about-block-label">Block 1</span>
+                                    <div class="about-block-actions">
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="moveBlock(this, -1)" title="Move up">&uarr;</button>
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="moveBlock(this, 1)" title="Move down">&darr;</button>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="removeBlock(this)" title="Delete">&times;</button>
+                                    </div>
+                                </div>
+                                <div class="about-block-body">
+                                    <div class="form-group">
+                                        <label>Heading <small style="color:#94a3b8;font-weight:400;">(optional)</small></label>
+                                        <input type="text" name="block_heading[]" class="form-control" placeholder="e.g. Our History, Our Team...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Content</label>
+                                        <textarea name="block_content[]" class="form-control" style="min-height:150px;" placeholder="Enter paragraph text. Use blank lines to separate paragraphs."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="addBlock()" style="margin-top:10px;">+ Add Block</button>
                 </div>
                 <div class="form-group">
                     <label>Featured Image</label>
@@ -270,21 +400,42 @@ $result = mysqli_query($conn, "SELECT wc.*, u.name as creator FROM website_conte
             <div class="about-tab-panel" id="tab-about-gallery">
                 <div class="about-tab-header">
                     <h4>About Gallery</h4>
-                    <p>Upload multiple images for the gallery section. These are appended to existing gallery images.</p>
+                    <p>Manage gallery images for the About Us page.</p>
                 </div>
                 <div class="form-group">
                     <label>Section Title</label>
                     <input type="text" name="gallery_title" class="form-control" value="<?= sanitizeInput($aboutGallery['title'] ?? 'Our Gallery') ?>">
                 </div>
+                <?php if ($aboutGallery && !empty($aboutGallery['content'])):
+                    preg_match_all('/<figure[^>]*>.*?<\/figure>/s', $aboutGallery['content'], $matches);
+                    $figures = $matches[0] ?? [];
+                    if (!empty($figures)):
+                ?>
                 <div class="form-group">
-                    <label>Existing Gallery Content</label>
-                    <textarea name="gallery_content" class="form-control" style="min-height:200px;"><?= sanitizeInput($aboutGallery['content'] ?? '') ?></textarea>
-                    <small style="color:#94a3b8;">This holds the HTML for existing gallery images.</small>
+                    <label>Existing Gallery Images</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:8px;">
+                        <?php foreach ($figures as $idx => $figure): ?>
+                        <div style="position:relative;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;background:#fff;max-width:180px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+                            <?= $figure ?>
+                            <div style="padding:6px 8px;border-top:1px solid #e2e8f0;font-size:13px;">
+                                <input type="checkbox" name="remove_gallery[]" value="<?= $idx ?>" id="rm_gal_<?= $idx ?>">
+                                <label for="rm_gal_<?= $idx ?>" style="margin:0 0 0 4px;cursor:pointer;color:#dc2626;font-weight:500;">Remove</label>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <small style="color:#94a3b8;display:block;margin-top:6px;">Check images to remove before saving.</small>
                 </div>
+                <?php endif; endif; ?>
                 <div class="form-group">
                     <label>Upload New Gallery Images</label>
                     <input type="file" name="gallery_images[]" class="form-control" accept="image/*" multiple>
-                    <small style="color:#94a3b8;">Select one or more images. New images are appended to existing gallery content on save.</small>
+                    <small style="color:#94a3b8;">Select one or more images to add to the gallery.</small>
+                </div>
+                <div class="form-group">
+                    <label>Raw Gallery HTML <small style="color:#94a3b8;font-weight:400;">(advanced)</small></label>
+                    <textarea name="gallery_content" class="form-control" style="min-height:120px;font-family:monospace;font-size:13px;"><?= sanitizeInput($aboutGallery['content'] ?? '') ?></textarea>
+                    <small style="color:#94a3b8;">This holds the HTML for existing gallery images. You can edit it directly if needed.</small>
                 </div>
             </div>
 
@@ -307,6 +458,9 @@ $result = mysqli_query($conn, "SELECT wc.*, u.name as creator FROM website_conte
                     <input type="file" name="mission_image" class="form-control" accept="image/*">
                     <?php if (!empty($aboutMission['featured_image'])): ?>
                     <br><img src="<?= SITE_URL . '/' . sanitizeInput($aboutMission['featured_image']) ?>" style="max-height:100px;margin-top:5px;">
+                    <label style="display:inline-block;margin-top:6px;font-size:13px;color:#dc2626;cursor:pointer;">
+                        <input type="checkbox" name="mission_remove_image" value="1"> Remove current image
+                    </label>
                     <?php endif; ?>
                 </div>
             </div>
@@ -330,6 +484,9 @@ $result = mysqli_query($conn, "SELECT wc.*, u.name as creator FROM website_conte
                     <input type="file" name="vision_image" class="form-control" accept="image/*">
                     <?php if (!empty($aboutVision['featured_image'])): ?>
                     <br><img src="<?= SITE_URL . '/' . sanitizeInput($aboutVision['featured_image']) ?>" style="max-height:100px;margin-top:5px;">
+                    <label style="display:inline-block;margin-top:6px;font-size:13px;color:#dc2626;cursor:pointer;">
+                        <input type="checkbox" name="vision_remove_image" value="1"> Remove current image
+                    </label>
                     <?php endif; ?>
                 </div>
             </div>
@@ -377,6 +534,39 @@ $result = mysqli_query($conn, "SELECT wc.*, u.name as creator FROM website_conte
         font-size: 0.85rem;
         color: #94a3b8;
     }
+    .about-block-item {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        background: #f8fafc;
+        overflow: hidden;
+    }
+    .about-block-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        background: #f1f5f9;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .about-block-label {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #334155;
+    }
+    .about-block-actions {
+        display: flex;
+        gap: 6px;
+    }
+    .about-block-body {
+        padding: 16px;
+    }
+    .about-block-body .form-group {
+        margin-bottom: 12px;
+    }
+    .about-block-body .form-group:last-child {
+        margin-bottom: 0;
+    }
     </style>
 
     <script>
@@ -386,6 +576,12 @@ $result = mysqli_query($conn, "SELECT wc.*, u.name as creator FROM website_conte
         var aboutTabs = document.getElementById('about-tabs');
         var titleGroup = document.getElementById('title-group');
 
+        function setFieldsDisabled(root, disabled) {
+            root.querySelectorAll('textarea, input, select, button').forEach(function(el) {
+                el.disabled = disabled;
+            });
+        }
+
         function switchMode() {
             var isAbout = sel.value === 'about';
             stdFields.style.display = isAbout ? 'none' : 'block';
@@ -393,9 +589,17 @@ $result = mysqli_query($conn, "SELECT wc.*, u.name as creator FROM website_conte
             if (isAbout) {
                 sel.style.display = 'none';
                 titleGroup.style.display = 'none';
+                setFieldsDisabled(stdFields, true);
+                setFieldsDisabled(titleGroup, true);
+                setFieldsDisabled(aboutTabs, false);
+                sel.disabled = false;
             } else {
                 sel.style.display = 'block';
                 titleGroup.style.display = 'block';
+                setFieldsDisabled(aboutTabs, true);
+                setFieldsDisabled(stdFields, false);
+                setFieldsDisabled(titleGroup, false);
+                sel.disabled = false;
             }
         }
 
@@ -414,10 +618,68 @@ $result = mysqli_query($conn, "SELECT wc.*, u.name as creator FROM website_conte
             });
         });
 
-        // Activate first tab by default
         var firstTab = document.querySelector('.about-tab-btn');
         if (firstTab) firstTab.click();
     })();
+
+    function addBlock() {
+        var container = document.getElementById('about-blocks');
+        if (!container) return;
+        var count = container.children.length + 1;
+        var div = document.createElement('div');
+        div.className = 'about-block-item';
+        div.innerHTML =
+            '<div class="about-block-header">' +
+                '<span class="about-block-label">Block ' + count + '</span>' +
+                '<div class="about-block-actions">' +
+                    '<button type="button" class="btn btn-sm btn-secondary" onclick="moveBlock(this, -1)" title="Move up">&uarr;</button>' +
+                    '<button type="button" class="btn btn-sm btn-secondary" onclick="moveBlock(this, 1)" title="Move down">&darr;</button>' +
+                    '<button type="button" class="btn btn-sm btn-danger" onclick="removeBlock(this)" title="Delete">&times;</button>' +
+                '</div>' +
+            '</div>' +
+            '<div class="about-block-body">' +
+                '<div class="form-group">' +
+                    '<label>Heading <small style="color:#94a3b8;font-weight:400;">(optional)</small></label>' +
+                    '<input type="text" name="block_heading[]" class="form-control" placeholder="e.g. Our History, Our Team...">' +
+                '</div>' +
+                '<div class="form-group">' +
+                    '<label>Content</label>' +
+                    '<textarea name="block_content[]" class="form-control" style="min-height:150px;" placeholder="Enter paragraph text. Use blank lines to separate paragraphs."></textarea>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+        container.appendChild(div);
+        updateBlockLabels();
+    }
+
+    function removeBlock(btn) {
+        var items = document.querySelectorAll('.about-block-item');
+        if (items.length <= 1) {
+            if (!confirm('Remove the last block? Content will be empty.')) return;
+        }
+        btn.closest('.about-block-item').remove();
+        updateBlockLabels();
+    }
+
+    function moveBlock(btn, dir) {
+        var item = btn.closest('.about-block-item');
+        var container = document.getElementById('about-blocks');
+        if (!container) return;
+        if (dir === -1 && item.previousElementSibling) {
+            container.insertBefore(item, item.previousElementSibling);
+        } else if (dir === 1 && item.nextElementSibling) {
+            container.insertBefore(item.nextElementSibling, item);
+        }
+        updateBlockLabels();
+    }
+
+    function updateBlockLabels() {
+        var items = document.querySelectorAll('.about-block-item');
+        items.forEach(function(item, i) {
+            var label = item.querySelector('.about-block-label');
+            if (label) label.textContent = 'Block ' + (i + 1);
+        });
+    }
     </script>
     <?php else: ?>
     <table>

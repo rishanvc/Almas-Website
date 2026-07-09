@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
 /* Admin Dashboard Styles */
 :root {
     --sidebar: #1e293b; --sidebar-hover: #334155; --sidebar-width: 250px;
@@ -5,7 +6,7 @@
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: #f1f5f9; display: flex; min-height: 100vh;
 }
 
