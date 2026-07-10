@@ -6,7 +6,7 @@ $departments = getActiveDepartments();
 ?>
 <section class="page-header">
     <div class="container">
-        <h1>Our Departments</h1>
+        <h1>Our Specialities</h1>
         <p>Comprehensive medical care across all specialties</p>
     </div>
 </section>

@@ -14,7 +14,7 @@ $vision = getPublishedContent('about_vision');
     </div>
 </section> -->
 <section class="section">
-    <div class="container">
+    <div class="about-container">
         <div class="about-layout">
             <h6 class="about-label">Almas Hospital</h6>
             <h2 class="about-title">About Us</h2>

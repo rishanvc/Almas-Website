@@ -87,7 +87,8 @@ if (!hasAnyRole(['Administrator', 'Content Approver']) && !getUserAssignAllStatu
         </div>
         <div class="form-group">
             <label>Description *</label>
-            <textarea name="description" class="form-control" style="min-height:200px;" required><?= sanitizeInput($editDept['description'] ?? '') ?></textarea>
+            <textarea name="description" id="dept-description" class="form-control" style="min-height:200px;" required><?= sanitizeInput($editDept['description'] ?? '') ?></textarea>
+            <small style="color:#94a3b8;">Use the toolbar to format text, add lists, and insert images.</small>
         </div>
         <div class="form-row">
             <div class="form-group">
@@ -107,6 +108,7 @@ if (!hasAnyRole(['Administrator', 'Content Approver']) && !getUserAssignAllStatu
         </div>
         <button type="submit" name="save" class="btn btn-success">Save Department</button>
     </form>
+    <script>document.addEventListener('DOMContentLoaded', function() { var el = document.getElementById('dept-description'); if (el) makeEditor('dept-description'); });</script>
     <?php else: ?>
     <table>
         <thead>
@@ -131,6 +133,7 @@ if (!hasAnyRole(['Administrator', 'Content Approver']) && !getUserAssignAllStatu
                     <?php if (hasAnyRole(['Administrator', 'Content Creator'])): ?>
                     <a href="?facilities=<?= $row['id'] ?>" class="btn btn-sm btn-info">Facilities</a>
                     <a href="?sections=<?= $row['id'] ?>" class="btn btn-sm btn-warning">Units</a>
+                    <a href="?faq=<?= $row['id'] ?>" class="btn btn-sm btn-secondary">FAQ</a>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -299,12 +302,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_section'])) {
         $s_content = $_POST['content']; // raw HTML for content type
     }
 
+    $s_image = '';
+    if (!empty($_FILES['section_image']['name'])) {
+        $upload = uploadFile($_FILES['section_image'], UPLOAD_PATH . '/departments');
+        if ($upload['success']) $s_image = $upload['path'];
+    }
+
     if ($sid) {
-        $stmt = mysqli_prepare($conn, "UPDATE department_sections SET section_key=?, section_type=?, title=?, content=?, sort_order=? WHERE id=?");
-        mysqli_stmt_bind_param($stmt, 'ssssii', $s_key, $s_type, $s_title, $s_content, $s_order, $sid);
+        if ($s_image) {
+            $stmt = mysqli_prepare($conn, "UPDATE department_sections SET section_key=?, section_type=?, title=?, content=?, image_path=?, sort_order=? WHERE id=?");
+            mysqli_stmt_bind_param($stmt, 'sssssii', $s_key, $s_type, $s_title, $s_content, $s_image, $s_order, $sid);
+        } else {
+            $stmt = mysqli_prepare($conn, "UPDATE department_sections SET section_key=?, section_type=?, title=?, content=?, sort_order=? WHERE id=?");
+            mysqli_stmt_bind_param($stmt, 'ssssii', $s_key, $s_type, $s_title, $s_content, $s_order, $sid);
+        }
     } else {
-        $stmt = mysqli_prepare($conn, "INSERT INTO department_sections (department_id, section_key, section_type, title, content, sort_order, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        mysqli_stmt_bind_param($stmt, 'issssii', $deptId, $s_key, $s_type, $s_title, $s_content, $s_order, $_SESSION['user_id']);
+        if ($s_image) {
+            $stmt = mysqli_prepare($conn, "INSERT INTO department_sections (department_id, section_key, section_type, title, content, image_path, sort_order, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            mysqli_stmt_bind_param($stmt, 'isssssii', $deptId, $s_key, $s_type, $s_title, $s_content, $s_image, $s_order, $_SESSION['user_id']);
+        } else {
+            $stmt = mysqli_prepare($conn, "INSERT INTO department_sections (department_id, section_key, section_type, title, content, sort_order, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            mysqli_stmt_bind_param($stmt, 'issssii', $deptId, $s_key, $s_type, $s_title, $s_content, $s_order, $_SESSION['user_id']);
+        }
     }
     mysqli_stmt_execute($stmt);
     $newSid = $sid ?: mysqli_insert_id($conn);
@@ -368,7 +387,16 @@ while ($row = mysqli_fetch_assoc($r)) { $allSections[] = $row; }
         <!-- Content type -->
         <div class="form-group section-type-content" <?= ($editSection['section_type'] ?? 'content') != 'content' ? 'style="display:none;"' : '' ?>>
             <label>Content</label>
-            <textarea name="content" class="form-control" style="min-height:200px;"><?= sanitizeInput($editSection['content'] ?? '') ?></textarea>
+            <textarea name="content" id="section-content" class="form-control" style="min-height:200px;"><?= sanitizeInput($editSection['content'] ?? '') ?></textarea>
+            <small style="color:#94a3b8;">Use the toolbar to format text, create lists, and insert images.</small>
+        </div>
+        <div class="form-group section-type-content" <?= ($editSection['section_type'] ?? 'content') != 'content' ? 'style="display:none;"' : '' ?>>
+            <label>Image (optional)</label>
+            <input type="file" name="section_image" class="form-control" accept="image/*">
+            <?php if (!empty($editSection['image_path'])): ?>
+            <br><img src="<?= SITE_URL . '/' . sanitizeInput($editSection['image_path']) ?>" style="max-height:80px;margin-top:5px;border-radius:4px;">
+            <input type="hidden" name="existing_image" value="<?= sanitizeInput($editSection['image_path']) ?>">
+            <?php endif; ?>
         </div>
 
         <!-- List type -->
@@ -420,9 +448,10 @@ while ($row = mysqli_fetch_assoc($r)) { $allSections[] = $row; }
         container.appendChild(div);
     }
     document.getElementById('section-type-select').addEventListener('change', function() {
-        document.querySelector('.section-type-content').style.display = this.value === 'content' ? 'block' : 'none';
+        document.querySelectorAll('.section-type-content').forEach(function(el) { el.style.display = this.value === 'content' ? 'block' : 'none'; }.bind(this));
         document.querySelector('.section-type-list').style.display = this.value === 'list' ? 'block' : 'none';
     });
+    document.addEventListener('DOMContentLoaded', function() { var el = document.getElementById('section-content'); if (el) makeEditor('section-content'); });
     </script>
     <?php else: ?>
     <table>
@@ -463,4 +492,177 @@ while ($row = mysqli_fetch_assoc($r)) { $allSections[] = $row; }
 </div>
 <?php endif; ?>
 
+<?php
+// FAQ management
+if (isset($_GET['faq'])):
+$deptId = (int)$_GET['faq'];
+if (!hasAnyRole(['Administrator', 'Content Approver']) && !canUserAccessDepartment($_SESSION['user_id'], $deptId)) {
+    $_SESSION['error'] = 'You do not have access to this department.';
+    redirect('departments.php');
+}
+$dept = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM departments WHERE id = $deptId"));
+if (!$dept) { redirect('departments.php'); }
+
+// Delete FAQ
+if (isset($_GET['delete_faq'])) {
+    $fid = (int)$_GET['delete_faq'];
+    mysqli_query($conn, "DELETE FROM department_faqs WHERE id = $fid");
+    $_SESSION['success'] = 'FAQ deleted.';
+    redirect('departments.php?faq=' . $deptId);
+}
+
+// Save FAQ
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_faq'])) {
+    $question = sanitize($_POST['faq_question']);
+    $answer = $_POST['faq_answer'];
+    $order = (int)$_POST['faq_order'];
+    $fid = isset($_POST['faq_id']) ? (int)$_POST['faq_id'] : 0;
+
+    if ($fid) {
+        $stmt = mysqli_prepare($conn, "UPDATE department_faqs SET question=?, answer=?, sort_order=? WHERE id=?");
+        mysqli_stmt_bind_param($stmt, 'ssii', $question, $answer, $order, $fid);
+    } else {
+        $stmt = mysqli_prepare($conn, "INSERT INTO department_faqs (department_id, question, answer, sort_order, created_by) VALUES (?, ?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, 'issii', $deptId, $question, $answer, $order, $_SESSION['user_id']);
+    }
+    mysqli_stmt_execute($stmt);
+    $newFid = $fid ?: mysqli_insert_id($conn);
+    mysqli_stmt_close($stmt);
+
+    if (!hasAnyRole(['Administrator', 'Content Approver'])) {
+        createApprovalRequest('department_faq', $newFid, $_SESSION['user_id']);
+        $_SESSION['success'] = 'FAQ saved and submitted for approval.';
+    } else {
+        $_SESSION['success'] = 'FAQ saved successfully.';
+    }
+    redirect('departments.php?faq=' . $deptId);
+}
+
+$editFAQ = null;
+if (isset($_GET['edit_faq'])) {
+    $fid = (int)$_GET['edit_faq'];
+    $editFAQ = getDepartmentFAQ($fid);
+}
+$faqs = getDepartmentFAQs($deptId);
+?>
+<div class="table-container" style="margin-top:20px;">
+    <div class="header">
+        <h5>FAQs for: <?= sanitizeInput($dept['department_name']) ?></h5>
+        <a href="?faq=<?= $deptId ?>&add_faq=1" class="btn btn-sm btn-primary"><?= $editFAQ ? '← Back' : 'Add FAQ' ?></a>
+    </div>
+    <?php if ($editFAQ || isset($_GET['add_faq'])): ?>
+    <form method="POST" action="" style="padding:20px;">
+        <input type="hidden" name="faq_id" value="<?= $editFAQ['id'] ?? 0 ?>">
+        <div class="form-group">
+            <label>Question *</label>
+            <input type="text" name="faq_question" class="form-control" value="<?= sanitizeInput($editFAQ['question'] ?? '') ?>" required>
+        </div>
+        <div class="form-group">
+            <label>Answer *</label>
+            <textarea name="faq_answer" id="faq-answer" class="form-control" style="min-height:150px;" required><?= sanitizeInput($editFAQ['answer'] ?? '') ?></textarea>
+            <small style="color:#94a3b8;">Use the toolbar to format the answer text.</small>
+        </div>
+        <div class="form-group">
+            <label>Sort Order</label>
+            <input type="number" name="faq_order" class="form-control" value="<?= (int)($editFAQ['sort_order'] ?? 0) ?>" min="0">
+        </div>
+        <button type="submit" name="save_faq" class="btn btn-success">Save FAQ</button>
+        <?php if ($editFAQ): ?>
+        <a href="?faq=<?= $deptId ?>&delete_faq=<?= $editFAQ['id'] ?>" class="btn btn-danger" data-confirm="Delete this FAQ?" style="margin-left:8px;">Delete FAQ</a>
+        <?php endif; ?>
+    </form>
+    <script>document.addEventListener('DOMContentLoaded', function() { var el = document.getElementById('faq-answer'); if (el) makeEditor('faq-answer'); });</script>
+    <?php else: ?>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Question</th>
+                <th>Answer</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (count($faqs) > 0): ?>
+                <?php foreach ($faqs as $faq): ?>
+                <tr>
+                    <td><?= (int)$faq['sort_order'] ?></td>
+                    <td><strong><?= sanitizeInput($faq['question']) ?></strong></td>
+                    <td><?= sanitizeInput(substr(strip_tags($faq['answer']), 0, 120)) ?>...</td>
+                    <td>
+                        <a href="?faq=<?= $deptId ?>&edit_faq=<?= $faq['id'] ?>" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="?faq=<?= $deptId ?>&delete_faq=<?= $faq['id'] ?>" class="btn btn-sm btn-danger" data-confirm="Delete this FAQ?">Delete</a>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr><td colspan="4" style="text-align:center;">No FAQs configured. Click "Add FAQ" to create one.</td></tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+    <?php endif; ?>
+    <div style="padding:10px 20px;">
+        <a href="departments.php" class="btn btn-sm btn-primary">← Back to Departments</a>
+    </div>
+</div>
+<?php endif; ?>
+
+<style>
+.editor-toolbar { display:flex; gap:4px; flex-wrap:wrap; padding:8px; background:#f8fafc; border:1px solid #cbd5e1; border-bottom:0; border-radius:6px 6px 0 0; }
+.editor-toolbar button { padding:5px 10px; background:#fff; border:1px solid #e2e8f0; border-radius:4px; cursor:pointer; font-size:13px; color:#475569; transition:all 0.2s; }
+.editor-toolbar button:hover { background:#f1f5f9; border-color:#94a3b8; }
+.editor-toolbar .sep { width:1px; background:#e2e8f0; margin:2px 4px; }
+.editor-content { min-height:200px; padding:12px; border:1px solid #cbd5e1; border-radius:0 0 6px 6px; font-size:14px; line-height:1.7; background:#fff; outline:none; }
+.editor-content:focus { border-color:#981c4e; box-shadow:0 0 0 3px rgba(152,28,78,0.12); }
+.editor-content ul, .editor-content ol { padding-left:24px; margin:8px 0; }
+.editor-content li { margin-bottom:4px; }
+.editor-content li > ul, .editor-content li > ol { margin:4px 0; }
+.editor-content p { margin-bottom:8px; }
+</style>
+<script>
+function makeEditor(textareaId) {
+    var ta = document.getElementById(textareaId);
+    if (!ta) return;
+    var wrapper = document.createElement('div');
+    wrapper.className = 'editor-wrapper';
+    ta.parentNode.insertBefore(wrapper, ta);
+    wrapper.appendChild(ta);
+    var toolbar = document.createElement('div');
+    toolbar.className = 'editor-toolbar';
+    toolbar.innerHTML =
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'bold\')" title="Bold"><b>B</b></button>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'italic\')" title="Italic"><i>I</i></button>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'underline\')" title="Underline"><u>U</u></button>' +
+        '<span class="sep"></span>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'insertUnorderedList\')" title="Bullet List"><i class="fas fa-list-ul"></i></button>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'insertOrderedList\')" title="Numbered List"><i class="fas fa-list-ol"></i></button>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'indent\')" title="Indent"><i class="fas fa-indent"></i></button>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'outdent\')" title="Outdent"><i class="fas fa-outdent"></i></button>' +
+        '<span class="sep"></span>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="insertLinkCmd()" title="Insert Link"><i class="fas fa-link"></i></button>';
+    wrapper.insertBefore(toolbar, ta);
+    var editor = document.createElement('div');
+    editor.className = 'editor-content';
+    editor.contentEditable = true;
+    editor.innerHTML = ta.value;
+    editor.dataset.target = textareaId;
+    editor.oninput = function() { document.getElementById(this.dataset.target).value = this.innerHTML; };
+    wrapper.insertBefore(editor, ta);
+    ta.style.display = 'none';
+}
+function syncAllEditors() {
+    document.querySelectorAll('.editor-content').forEach(function(el) {
+        var ta = document.getElementById(el.dataset.target);
+        if (ta) ta.value = el.innerHTML;
+    });
+}
+function execCmd(cmd) {
+    document.execCommand(cmd, false, null);
+    syncAllEditors();
+}
+function insertLinkCmd() {
+    var url = prompt('Enter URL:');
+    if (url) { document.execCommand('createLink', false, url); syncAllEditors(); }
+}
+</script>
 <?php require_once 'footer.php'; ?>

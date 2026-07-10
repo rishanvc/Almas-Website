@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 case 'gallery': $table = 'gallery'; break;
                 case 'career': $table = 'careers'; break;
                 case 'branch': $table = 'branches'; break;
+                case 'department_faq': $table = 'department_faqs'; break;
             }
             if ($table) {
                 $approvedById = $_SESSION['user_id'];
@@ -113,6 +114,9 @@ $historyResult = mysqli_query($conn, "SELECT ar.*, u1.name as requester, u2.name
                                 $entityData = mysqli_fetch_assoc($res);
                             } elseif ($row['entity_type'] == 'gallery') {
                                 $res = mysqli_query($conn, "SELECT * FROM gallery WHERE id = {$row['entity_id']}");
+                                $entityData = mysqli_fetch_assoc($res);
+                            } elseif ($row['entity_type'] == 'department_faq') {
+                                $res = mysqli_query($conn, "SELECT f.*, d.department_name FROM department_faqs f JOIN departments d ON f.department_id = d.id WHERE f.id = {$row['entity_id']}");
                                 $entityData = mysqli_fetch_assoc($res);
                             }
                             if ($entityData): ?>

@@ -95,6 +95,8 @@ select.form-control { appearance: auto; }
 .btn-danger:hover { background: #bb2d3b; }
 .btn-warning { background: var(--warning); color: #333; }
 .btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-secondary { background: #6b7280; color: #fff; }
+.btn-secondary:hover { background: #4b5563; }
 
 /* Alert */
 .alert { padding: 12px 18px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; }

@@ -236,6 +236,31 @@ function getAccessibleDepartments($userId) {
     return $data;
 }
 
+function getDepartmentFAQs($departmentId) {
+    global $conn;
+    $stmt = mysqli_prepare($conn, "SELECT * FROM department_faqs WHERE department_id = ? ORDER BY sort_order ASC");
+    mysqli_stmt_bind_param($stmt, 'i', $departmentId);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $data = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[] = $row;
+    }
+    mysqli_stmt_close($stmt);
+    return $data;
+}
+
+function getDepartmentFAQ($id) {
+    global $conn;
+    $stmt = mysqli_prepare($conn, "SELECT * FROM department_faqs WHERE id = ?");
+    mysqli_stmt_bind_param($stmt, 'i', $id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $data = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+    return $data;
+}
+
 function canUserAccessDepartment($userId, $deptId) {
     if (getUserAssignAllStatus($userId)) return true;
     $assignedIds = getUserAssignedDepartments($userId);

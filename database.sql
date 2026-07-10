@@ -309,3 +309,27 @@ INSERT INTO users (name, email, password, role, status) VALUES
 -- Insert default website settings
 INSERT INTO website_settings (website_name, email, phone, address, footer_text) VALUES
 ('Almas Hospital', 'info@almas.com', '+91 1234567890', 'Almas Hospital, City Name, State, India', '© 2026 Almas Hospital. All rights reserved.');
+
+-- =============================================
+-- Department Page Redesign Migrations
+-- =============================================
+-- 1. Add image_path column to department_sections (for unit optional images)
+-- ALTER TABLE department_sections ADD COLUMN image_path VARCHAR(255) NULL AFTER content;
+
+-- 2. Create department_faqs table (for dynamic FAQ management per department)
+-- CREATE TABLE IF NOT EXISTS department_faqs (
+--     id INT PRIMARY KEY AUTO_INCREMENT,
+--     department_id INT NOT NULL,
+--     question VARCHAR(500) NOT NULL,
+--     answer TEXT NOT NULL,
+--     sort_order INT NOT NULL DEFAULT 0,
+--     created_by INT NULL,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--     FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE CASCADE,
+--     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+-- ) ENGINE=InnoDB;
+
+-- 3. Add department_faq to approval_requests entity_type ENUM
+-- ALTER TABLE approval_requests
+-- MODIFY COLUMN entity_type ENUM('website_content','department','department_facility','department_section','doctor','gallery','patient_story','career','branch','website_setting','department_faq') NOT NULL;
