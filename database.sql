@@ -311,25 +311,37 @@ INSERT INTO website_settings (website_name, email, phone, address, footer_text) 
 ('Almas Hospital', 'info@almas.com', '+91 1234567890', 'Almas Hospital, City Name, State, India', '© 2026 Almas Hospital. All rights reserved.');
 
 -- =============================================
--- Department Page Redesign Migrations
+-- Department Unit-Based CMS Migration
 -- =============================================
--- 1. Add image_path column to department_sections (for unit optional images)
--- ALTER TABLE department_sections ADD COLUMN image_path VARCHAR(255) NULL AFTER content;
+-- Run these statements ONCE to upgrade the schema.
 
--- 2. Create department_faqs table (for dynamic FAQ management per department)
--- CREATE TABLE IF NOT EXISTS department_faqs (
---     id INT PRIMARY KEY AUTO_INCREMENT,
---     department_id INT NOT NULL,
---     question VARCHAR(500) NOT NULL,
---     answer TEXT NOT NULL,
---     sort_order INT NOT NULL DEFAULT 0,
---     created_by INT NULL,
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
---     FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE CASCADE,
---     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
--- ) ENGINE=InnoDB;
+-- 1. Migrate existing 'content' type to 'text' before ENUM change
+UPDATE department_sections SET section_type = 'text' WHERE section_type = 'content';
 
--- 3. Add department_faq to approval_requests entity_type ENUM
--- ALTER TABLE approval_requests
--- MODIFY COLUMN entity_type ENUM('website_content','department','department_facility','department_section','doctor','gallery','patient_story','career','branch','website_setting','department_faq') NOT NULL;
+-- 2. Expand section_type ENUM to support all layout types
+ALTER TABLE department_sections
+  MODIFY COLUMN section_type ENUM('text','image_text','text_image','list','gallery','cta','doctors') NOT NULL DEFAULT 'text';
+
+-- 3. Add subtitle, button_text, button_url columns
+ALTER TABLE department_sections
+  ADD COLUMN subtitle TEXT NULL AFTER title,
+  ADD COLUMN button_text VARCHAR(100) NULL AFTER subtitle,
+  ADD COLUMN button_url VARCHAR(500) NULL AFTER button_text;
+
+-- 4. Create department_faqs table (if not already created)
+CREATE TABLE IF NOT EXISTS department_faqs (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    department_id INT NOT NULL,
+    question VARCHAR(500) NOT NULL,
+    answer TEXT NOT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    created_by INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE CASCADE,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- 5. Add department_faq to approval_requests entity_type ENUM
+ALTER TABLE approval_requests
+  MODIFY COLUMN entity_type ENUM('website_content','department','department_facility','department_section','doctor','gallery','patient_story','career','branch','website_setting','department_faq') NOT NULL;

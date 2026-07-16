@@ -1,7 +1,7 @@
 <?php
 function sanitize($data) {
     global $conn;
-    return mysqli_real_escape_string($conn, htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8'));
+    return mysqli_real_escape_string($conn, trim($data));
 }
 
 function sanitizeInput($data) {
