@@ -24,12 +24,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
         if ($upload['success']) $image = $upload['path'];
     }
 
+    // Intro image
+    $introImgs = [];
+    if ($deptId) {
+        $oldDept = mysqli_fetch_assoc(mysqli_query($conn, "SELECT description_images FROM departments WHERE id = $deptId"));
+        if ($oldDept && $oldDept['description_images']) {
+            $introImgs = json_decode($oldDept['description_images'], true) ?: [];
+        }
+    }
+    if (!empty($_FILES['intro_image']['name'])) {
+        $upload = uploadFile($_FILES['intro_image'], UPLOAD_PATH . '/departments');
+        if ($upload['success']) $introImgs = [$upload['path']];
+    }
+    if (isset($_POST['remove_intro_image']) && $_POST['remove_intro_image']) {
+        $introImgs = [];
+    }
+    $descriptionImages = !empty($introImgs) ? json_encode($introImgs) : null;
+
     if (!hasRole('Administrator') && !hasRole('Content Approver')) $status = 'Active';
 
     if ($deptId) {
-        $setParts = ['department_name=?', 'description=?'];
-        $params   = [$name, $desc];
-        $types    = 'ss';
+        $setParts = ['department_name=?', 'description=?', 'description_images=?'];
+        $params   = [$name, $desc, $descriptionImages];
+        $types    = 'sss';
         if ($image) {
             $setParts[] = 'image=?';
             $params[]   = $image;
@@ -46,13 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
         $stmt = mysqli_prepare($conn, "UPDATE departments SET " . implode(', ', $setParts) . " WHERE id=?");
         mysqli_stmt_bind_param($stmt, $types, ...$params);
     } else {
-        if ($image) {
-            $stmt = mysqli_prepare($conn, "INSERT INTO departments (department_name, description, image, created_by) VALUES (?, ?, ?, ?)");
-            mysqli_stmt_bind_param($stmt, 'sssi', $name, $desc, $image, $_SESSION['user_id']);
-        } else {
-            $stmt = mysqli_prepare($conn, "INSERT INTO departments (department_name, description, created_by) VALUES (?, ?, ?)");
-            mysqli_stmt_bind_param($stmt, 'ssi', $name, $desc, $_SESSION['user_id']);
-        }
+        $stmt = mysqli_prepare($conn, "INSERT INTO departments (department_name, description, description_images, image, created_by) VALUES (?, ?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, 'ssssi', $name, $desc, $descriptionImages, $image ?: null, $_SESSION['user_id']);
     }
     mysqli_stmt_execute($stmt);
     $newId = $deptId ?: mysqli_insert_id($conn);
@@ -881,11 +893,30 @@ if (!hasAnyRole(['Administrator', 'Content Approver']) && !getUserAssignAllStatu
         </div>
         <div class="form-row">
             <div class="form-group">
-                <label>Image</label>
+                <label>Banner Image</label>
                 <input type="file" name="image" class="form-control" accept="image/*">
                 <?php if (!empty($editDept['image'])): ?>
                 <br><img src="<?= SITE_URL . '/' . sanitizeInput($editDept['image']) ?>" style="max-height:80px;margin-top:5px;">
                 <?php endif; ?>
+            </div>
+            <div class="form-group">
+                <label>Introduction Image</label>
+                <input type="file" name="intro_image" class="form-control" accept="image/*">
+                <?php
+                $introImgs = [];
+                if (!empty($editDept['description_images'])) {
+                    $introImgs = json_decode($editDept['description_images'], true) ?: [];
+                }
+                if (!empty($introImgs[0])):
+                ?>
+                <div style="margin-top:8px;position:relative;display:inline-block;">
+                    <img src="<?= SITE_URL . '/' . sanitizeInput($introImgs[0]) ?>" style="max-height:80px;border-radius:8px;border:1px solid #e2e8f0;">
+                    <label style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;cursor:pointer;color:#dc2626;">
+                        <input type="checkbox" name="remove_intro_image" value="1"> Remove
+                    </label>
+                </div>
+                <?php endif; ?>
+                <small style="color:#94a3b8;display:block;margin-top:4px;">Shows side-by-side with department intro text.</small>
             </div>
             <div class="form-group">
                 <label>Status</label>
