@@ -2714,7 +2714,7 @@ select.form-control {
 .dept-checklist-row {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 1px;
 }
 
 .dept-check-icon {
@@ -2741,45 +2741,6 @@ select.form-control {
   color: var(--body-text);
   line-height: 1.6;
   margin-top: 2px;
-}
-
-.dept-checklist-sub {
-  list-style: none;
-  padding: 0;
-  margin: 6px 0 0 25px;
-}
-
-.dept-checklist-sub li {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  padding: 3px 0;
-  position: relative;
-}
-
-.dept-checklist-sub li::before {
-  content: '';
-  position: absolute;
-  left: -14px;
-  top: 10px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--primary);
-  opacity: 0.5;
-}
-
-.dept-checklist-subtitle {
-  font-size: 0.88rem;
-  font-weight: 400;
-  color: var(--body-text);
-  line-height: 1.5;
-}
-
-.dept-checklist-subdesc {
-  font-size: 0.85rem;
-  color: var(--body-text);
-  line-height: 1.5;
 }
 
 @media (max-width: 768px) {
@@ -2833,7 +2794,7 @@ select.form-control {
   }
 }
 
-dept-check-num {
+.dept-check-num {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--primary);
@@ -2877,7 +2838,7 @@ dept-check-num {
 }
 
 .dept-checklist-subtitle {
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .dept-checklist-subdesc {
