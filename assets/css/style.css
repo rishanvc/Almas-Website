@@ -1529,7 +1529,7 @@ select.form-control {
 /* ===== Pagination ===== */
 .pagination {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 6px;
   margin-top: 36px;
 }
