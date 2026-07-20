@@ -26,14 +26,23 @@ $bannerImage = $dept['image'] ? SITE_URL . '/' . sanitizeInput($dept['image']) :
 
 <section class="dept-main">
     <div class="container">
-        <h6 class="dept-title-label"><?= sanitizeInput($settings['website_name'] ?? 'ALMAS HOSPITAL') ?></h6>
-        <h2 class="dept-title-name"><?= sanitizeInput($dept['department_name']) ?></h2>
-        <?php if ($dept['description']): ?>
-        <div class="dept-intro-content content-area">
-            <?= nl2p($dept['description']) ?>
-            <a href="<?= SITE_URL ?>/contact.php" class="btn btn-primary" style="border-radius:50px;padding:12px 32px;margin-top:20px;"><i class="fas fa-phone-alt"></i> Contact Now</a>
+        <?php
+        $introImgs = json_decode($dept['description_images'] ?? '', true);
+        $introImg = (is_array($introImgs) && !empty($introImgs[0])) ? SITE_URL . '/' . sanitizeInput($introImgs[0]) : '';
+        ?>
+        <div class="dept-intro-wrap content-area">
+            <?php if ($introImg): ?>
+            <div class="dept-intro-img-float">
+                <img src="<?= $introImg ?>" alt="<?= sanitizeInput($dept['department_name']) ?>">
+            </div>
+            <?php endif; ?>
+            <h6 class="dept-title-label"><?= sanitizeInput($settings['website_name'] ?? 'ALMAS HOSPITAL') ?></h6>
+            <h1 class="dept-title-name" style="margin:0 0 48px;"><?= sanitizeInput($dept['department_name']) ?></h1>
+            <?php if ($dept['description']): ?>
+                <?= nl2p($dept['description']) ?>
+            <?php endif; ?>
         </div>
-        <?php endif; ?>
+        <a href="<?= SITE_URL ?>/contact.php" class="btn btn-primary" style="border-radius:50px;padding:12px 32px;margin-top:20px;"><i class="fas fa-phone-alt"></i> Contact Now</a>
     </div>
 </section>
 
@@ -182,11 +191,26 @@ foreach ($sections as $section):
             <?php endif; ?>
 
         <?php elseif ($secType === 'list'): ?>
-            <div class="dept-checklist">
+            <?php
+            $hasSubItems = false;
+            foreach ($listItems as $item) {
+                if (!empty($item['children']) && count($item['children']) > 0) {
+                    $hasSubItems = true;
+                    break;
+                }
+            }
+            $numCounter = 0;
+            ?>
+            <div class="dept-checklist <?= $hasSubItems ? 'dept-checklist-numbered' : '' ?>">
                 <?php foreach ($listItems as $item): ?>
                 <div class="dept-checklist-item">
                     <div class="dept-checklist-row">
+                        <?php if ($hasSubItems): ?>
+                        <?php $numCounter++; ?>
+                        <span class="dept-check-num"><?= $numCounter ?>.</span>
+                        <?php else: ?>
                         <i class="fas fa-check-circle dept-check-icon"></i>
+                        <?php endif; ?>
                         <div class="dept-checklist-text">
                             <span class="dept-checklist-title"><?= sanitizeInput($item['title'] ?? '') ?></span>
                             <?php if (!empty($item['description'])): ?>
@@ -198,6 +222,7 @@ foreach ($sections as $section):
                     <ul class="dept-checklist-sub">
                         <?php foreach ($item['children'] as $child): ?>
                         <li>
+                            <i class="fas fa-check-circle dept-sub-icon"></i>
                             <span class="dept-checklist-subtitle"><?= sanitizeInput($child['title'] ?? '') ?></span>
                             <?php if (!empty($child['description'])): ?>
                             <span class="dept-checklist-subdesc"><?= sanitizeInput($child['description']) ?></span>
