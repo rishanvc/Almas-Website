@@ -40,6 +40,27 @@ function getActiveDepartments() {
     return $data;
 }
 
+function getActiveDepartmentsPaginated($page = 1, $perPage = 6) {
+    global $conn;
+    $offset = ($page - 1) * $perPage;
+    $stmt = mysqli_prepare($conn, "SELECT * FROM departments WHERE status = 'Active' ORDER BY department_name LIMIT ? OFFSET ?");
+    mysqli_stmt_bind_param($stmt, 'ii', $perPage, $offset);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $data = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[] = $row;
+    }
+    return $data;
+}
+
+function countActiveDepartments() {
+    global $conn;
+    $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM departments WHERE status = 'Active'");
+    $row = mysqli_fetch_assoc($result);
+    return (int)$row['total'];
+}
+
 function getActiveDoctors($departmentId = null) {
     global $conn;
     if ($departmentId) {

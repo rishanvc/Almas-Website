@@ -2,7 +2,13 @@
 $pageTitle = 'Departments';
 $metaDesc = 'Explore all departments at Almas Hospital with detailed information about facilities and services.';
 require_once 'includes/header.php';
-$departments = getActiveDepartments();
+
+$perPage = 6;
+$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$totalDepts = countActiveDepartments();
+$totalPages = ceil($totalDepts / $perPage);
+if ($page > $totalPages && $totalPages > 0) $page = $totalPages;
+$departments = getActiveDepartmentsPaginated($page, $perPage);
 ?>
 <section class="page-header">
     <div class="container">
@@ -29,6 +35,19 @@ $departments = getActiveDepartments();
             </div>
             <?php endforeach; ?>
         </div>
+        <?php if ($totalPages > 1): ?>
+        <div class="pagination">
+            <?php if ($page > 1): ?>
+            <a href="?page=<?= $page - 1 ?>">&laquo; Prev</a>
+            <?php endif; ?>
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <a href="?page=<?= $i ?>" class="<?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
+            <?php endfor; ?>
+            <?php if ($page < $totalPages): ?>
+            <a href="?page=<?= $page + 1 ?>">Next &raquo;</a>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
         <?php else: ?>
         <div class="text-center">
             <p>Department information coming soon.</p>
