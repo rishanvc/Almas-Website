@@ -2722,19 +2722,6 @@ select.form-control {
   align-items: flex-start;
   gap: 6px;
   padding: 3px 0;
-  position: relative;
-}
-
-.dept-checklist-sub li::before {
-  content: '';
-  position: absolute;
-  left: -14px;
-  top: 10px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--primary);
-  opacity: 0.5;
 }
 
 .dept-checklist-subtitle {
