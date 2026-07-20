@@ -2800,3 +2800,68 @@ select.form-control {
     margin-bottom: 24px;
   }
 }
+
+/* Numbered Checklist */
+.dept-checklist-numbered .dept-checklist-item {
+  margin-bottom: 16px;
+}
+
+.dept-checklist-numbered .dept-checklist-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.dept-check-num {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.3;
+  min-width: 28px;
+  flex-shrink: 0;
+}
+
+.dept-checklist-numbered .dept-checklist-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--body-text, #333);
+  line-height: 1.3;
+}
+
+.dept-checklist:not(.dept-checklist-numbered) .dept-checklist-title {
+  font-size: 0.95rem;
+}
+
+.dept-checklist-sub {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 38px;
+}
+
+.dept-checklist-sub li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+  color: var(--body-text, #333);
+  line-height: 1.5;
+}
+
+.dept-sub-icon {
+  color: var(--primary);
+  font-size: 0.85rem;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.dept-checklist-subtitle {
+  font-weight: 600;
+}
+
+.dept-checklist-subdesc {
+  display: block;
+  font-weight: 400;
+  color: #64748b;
+  font-size: 0.9rem;
+}
