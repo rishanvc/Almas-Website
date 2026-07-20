@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS department_sections (
 -- Approval requests table
 CREATE TABLE IF NOT EXISTS approval_requests (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    entity_type ENUM('website_content','department','department_facility','department_section','doctor','gallery','patient_story','career','branch','website_setting') NOT NULL,
+    entity_type ENUM('website_content','department','department_facility','department_section','doctor','gallery','patient_story','career','branch','website_setting','blog') NOT NULL,
     entity_id INT NOT NULL,
     requested_by INT NULL,
     approved_by INT NULL,
@@ -145,12 +145,14 @@ CREATE TABLE IF NOT EXISTS appointments (
     FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
--- Gallery table
-CREATE TABLE IF NOT EXISTS gallery (
+-- Blogs table
+CREATE TABLE IF NOT EXISTS blogs (
     id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     description TEXT NULL,
-    image VARCHAR(255) NOT NULL,
+    content TEXT NULL,
+    posted_date DATE NULL,
+    image VARCHAR(255) NULL,
     status ENUM('Active','Inactive') DEFAULT 'Active',
     created_by INT NULL,
     approved_by INT NULL,
@@ -298,7 +300,8 @@ CREATE INDEX idx_doctors_department ON doctors(department_id);
 CREATE INDEX idx_appointments_date ON appointments(appointment_date);
 CREATE INDEX idx_appointments_status ON appointments(status);
 CREATE INDEX idx_careers_status ON careers(status);
-CREATE INDEX idx_gallery_status ON gallery(status);
+-- Indexes for blogs (formerly gallery)
+CREATE INDEX idx_blog_status ON blogs(status);
 CREATE INDEX idx_branches_status ON branches(status);
 
 -- Insert default admin user (password: Admin@123)
@@ -342,6 +345,6 @@ CREATE TABLE IF NOT EXISTS department_faqs (
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
--- 5. Add department_faq to approval_requests entity_type ENUM
+-- 5. Add blog to approval_requests entity_type ENUM
 ALTER TABLE approval_requests
-  MODIFY COLUMN entity_type ENUM('website_content','department','department_facility','department_section','doctor','gallery','patient_story','career','branch','website_setting','department_faq') NOT NULL;
+  MODIFY COLUMN entity_type ENUM('website_content','department','department_facility','department_section','doctor','gallery','patient_story','career','branch','website_setting','department_faq','blog') NOT NULL;

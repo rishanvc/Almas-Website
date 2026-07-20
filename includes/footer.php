@@ -73,7 +73,7 @@ $quick_links = [
     'Laboratory Medicine' => '#',
     'Branches' => SITE_URL . '/branches.php',
     'Careers' => SITE_URL . '/careers.php',
-    'Gallery' => SITE_URL . '/gallery.php',
+    'Blogs' => SITE_URL . '/blogs.php',
     'Biomedical Report' => '#'
 ];
 ?>

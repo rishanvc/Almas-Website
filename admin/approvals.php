@@ -24,9 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 case 'department': $table = 'departments'; break;
                 case 'department_section': $table = 'department_sections'; break;
                 case 'doctor': $table = 'doctors'; break;
-                case 'gallery': $table = 'gallery'; break;
-                case 'career': $table = 'careers'; break;
-                case 'branch': $table = 'branches'; break;
+                case 'blog': $table = 'blogs'; break;
                 case 'department_faq': $table = 'department_faqs'; break;
             }
             if ($table) {
@@ -38,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     } else {
                         mysqli_query($conn, "UPDATE $table SET status='Published', approved_by=$approvedById WHERE id={$req['entity_id']}");
                     }
-                } elseif (in_array($req['entity_type'], ['department', 'doctor', 'gallery', 'career', 'branch'])) {
+                } elseif (in_array($req['entity_type'], ['department', 'doctor', 'blog', 'career', 'branch'])) {
                     mysqli_query($conn, "UPDATE $table SET approved_by=$approvedById WHERE id={$req['entity_id']}");
                 }
             }
@@ -112,8 +110,8 @@ $historyResult = mysqli_query($conn, "SELECT ar.*, u1.name as requester, u2.name
                             } elseif ($row['entity_type'] == 'department_section') {
                                 $res = mysqli_query($conn, "SELECT ds.*, d.department_name FROM department_sections ds JOIN departments d ON ds.department_id = d.id WHERE ds.id = {$row['entity_id']}");
                                 $entityData = mysqli_fetch_assoc($res);
-                            } elseif ($row['entity_type'] == 'gallery') {
-                                $res = mysqli_query($conn, "SELECT * FROM gallery WHERE id = {$row['entity_id']}");
+                            } elseif ($row['entity_type'] == 'blog') {
+                                $res = mysqli_query($conn, "SELECT * FROM blogs WHERE id = {$row['entity_id']}");
                                 $entityData = mysqli_fetch_assoc($res);
                             } elseif ($row['entity_type'] == 'department_faq') {
                                 $res = mysqli_query($conn, "SELECT f.*, d.department_name FROM department_faqs f JOIN departments d ON f.department_id = d.id WHERE f.id = {$row['entity_id']}");

@@ -72,9 +72,9 @@ function getDepartmentFacilities($departmentId) {
     return $data;
 }
 
-function getActiveGallery() {
+function getPublishedBlogs() {
     global $conn;
-    $result = mysqli_query($conn, "SELECT * FROM gallery WHERE status = 'Active' ORDER BY created_at DESC");
+    $result = mysqli_query($conn, "SELECT * FROM blogs WHERE status = 'Active' ORDER BY COALESCE(posted_date, created_at) DESC");
     $data = [];
     while ($row = mysqli_fetch_assoc($result)) {
         $data[] = $row;

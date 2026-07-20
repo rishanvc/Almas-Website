@@ -38,7 +38,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <a href="<?= SITE_URL ?>/admin/appointments.php" class="<?= $currentPage == 'appointments.php' ? 'active' : '' ?>"><i class="fas fa-calendar-check"></i> Appointments</a>
         <a href="<?= SITE_URL ?>/admin/packages.php" class="<?= $currentPage == 'packages.php' ? 'active' : '' ?>"><i class="fas fa-box-open"></i> Packages</a>
         <a href="<?= SITE_URL ?>/admin/careers.php" class="<?= $currentPage == 'careers.php' ? 'active' : '' ?>"><i class="fas fa-briefcase"></i> Careers</a>
-        <a href="<?= SITE_URL ?>/admin/gallery.php" class="<?= $currentPage == 'gallery.php' ? 'active' : '' ?>"><i class="fas fa-images"></i> Gallery</a>
+        <a href="<?= SITE_URL ?>/admin/blogs.php" class="<?= $currentPage == 'blogs.php' ? 'active' : '' ?>"><i class="fas fa-blog"></i> Blogs</a>
         <a href="<?= SITE_URL ?>/admin/branches.php" class="<?= $currentPage == 'branches.php' ? 'active' : '' ?>"><i class="fas fa-building"></i> Branches</a>
         <a href="<?= SITE_URL ?>/admin/enquiries.php" class="<?= $currentPage == 'enquiries.php' ? 'active' : '' ?>"><i class="fas fa-envelope-open-text"></i> Enquiries</a>
         <?php endif; ?>
