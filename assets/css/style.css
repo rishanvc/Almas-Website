@@ -495,11 +495,31 @@ ul {
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: var(--transition);
+  z-index: 1;
+}
+
+.card:hover::before {
+  transform: scaleX(1);
 }
 
 .card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-light);
 }
 
 .card-img {
@@ -507,11 +527,11 @@ ul {
   height: 220px;
   object-fit: cover;
   object-position: center;
-  transition: var(--transition);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card:hover .card-img {
-  transform: scale(1.03);
+  transform: scale(1.08);
 }
 
 .card-body {
@@ -519,6 +539,7 @@ ul {
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .card-title {
@@ -526,6 +547,28 @@ ul {
   font-weight: 600;
   margin-bottom: 10px;
   color: var(--heading-color);
+  transition: var(--transition);
+  display: inline-block;
+  position: relative;
+}
+
+.card-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover .card-title {
+  color: var(--primary);
+}
+
+.card:hover .card-title::after {
+  width: 30px;
 }
 
 .card-text {
@@ -546,16 +589,31 @@ ul {
   color: var(--white);
   border-radius: 6px;
   font-size: 0.82rem;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border: none;
   cursor: pointer;
   font-weight: 500;
   align-self: flex-start;
   transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.card .btn-sm::after {
+  content: '→';
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
 }
 
 .card .btn-sm:hover {
   background: var(--primary-dark);
+  padding-right: 24px;
+}
+
+.card .btn-sm:hover::after {
+  transform: translateX(4px);
 }
 
 /* ===== Doctor Card ===== */

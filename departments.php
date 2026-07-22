@@ -21,7 +21,7 @@ $departments = getActiveDepartmentsPaginated($page, $perPage);
         <?php if (count($departments) > 0): ?>
         <div class="row">
             <?php foreach ($departments as $dept): ?>
-            <div class="col-4">
+            <div class="col-4 animate-in">
                 <div class="card">
                     <?php if ($dept['image']): ?>
                     <img src="<?= SITE_URL . '/' . sanitizeInput($dept['image']) ?>" alt="<?= sanitizeInput($dept['department_name']) ?>" class="card-img">
