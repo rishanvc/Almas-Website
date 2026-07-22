@@ -130,7 +130,7 @@ foreach ($sections as $section):
     if ($secType === 'content') $secType = 'text';
 
     $secTitle   = sanitizeInput($section['title']);
-    $secSubtitle = $secType === 'list' ? strip_tags($section['subtitle'] ?? '', '<h1><h2><h3><h4><h5><h6><p><br><ul><ol><li><strong><b><em><i><u><a><span><div><blockquote><pre><code><table><thead><tbody><tr><th><td>') : sanitizeInput($section['subtitle'] ?? '');
+    $secSubtitle = sanitizeInput($section['subtitle'] ?? '');
     $secKey     = sanitizeInput($section['section_key']);
     $secImage   = $section['image_path'] ? SITE_URL . '/' . sanitizeInput($section['image_path']) : '';
     $btnText    = sanitizeInput($section['button_text'] ?? '');
@@ -168,7 +168,7 @@ foreach ($sections as $section):
         <h2 class="section-title"><?= $secTitle ?></h2>
         <?php endif; ?>
         <?php if ($secSubtitle): ?>
-        <?php if ($secType === 'list'): ?><div class="section-subtitle"><?= $secSubtitle ?></div><?php else: ?><p class="section-subtitle"><?= $secSubtitle ?></p><?php endif; ?>
+        <p class="section-subtitle"><?= $secSubtitle ?></p>
         <?php endif; ?>
 
         <?php if (in_array($secType, ['text', 'image_text', 'text_image', 'cta'])): ?>
