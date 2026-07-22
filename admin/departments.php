@@ -617,7 +617,13 @@ if ($editSection) {
         </div>
         <div class="form-group">
             <label>Subtitle</label>
-            <input type="text" name="section_subtitle" class="form-control" value="<?= sanitizeInput($editSection['subtitle'] ?? '') ?>" placeholder="Optional subtitle below the title">
+            <div id="unit-subtitle-plain">
+                <input type="text" name="section_subtitle" class="form-control" value="<?= sanitizeInput($editSection['subtitle'] ?? '') ?>" placeholder="Optional subtitle below the title">
+            </div>
+            <div id="unit-subtitle-editor" style="display:none;">
+                <textarea id="list-subtitle-editor" class="form-control" style="min-height:150px;"><?= sanitizeInput($editSection['subtitle'] ?? '') ?></textarea>
+                <small style="color:#94a3b8;">Use the toolbar to format the subtitle text.</small>
+            </div>
         </div>
 
         <!-- Description Editor (Text layout only) -->
@@ -1039,6 +1045,14 @@ function updateLayoutFields() {
     if (type === 'text') {
         document.getElementById('unit-text-description-section').style.display = 'block';
     }
+    // Toggle subtitle field
+    if (type === 'list') {
+        document.getElementById('unit-subtitle-plain').style.display = 'none';
+        document.getElementById('unit-subtitle-editor').style.display = 'block';
+    } else {
+        document.getElementById('unit-subtitle-plain').style.display = 'block';
+        document.getElementById('unit-subtitle-editor').style.display = 'none';
+    }
     if (type === 'image_text' || type === 'text_image' || type === 'cta') {
         document.getElementById('unit-paragraphs-section').style.display = 'block';
     }
@@ -1061,6 +1075,9 @@ updateLayoutFields();
 
 if (document.getElementById('unit-text-description')) {
     makeEditor('unit-text-description');
+}
+if (document.getElementById('list-subtitle-editor')) {
+    makeEditor('list-subtitle-editor');
 }
 
 // Auto-generate section key from title
@@ -1190,6 +1207,12 @@ document.getElementById('unit-form').addEventListener('submit', function() {
             items.push(item);
         });
         document.getElementById('list_items_data').value = JSON.stringify(items);
+
+        // Serialize subtitle from editor
+        var subEditor = document.querySelector('#unit-subtitle-editor .editor-content');
+        if (subEditor) {
+            document.querySelector('#unit-subtitle-plain input').value = subEditor.innerHTML;
+        }
     }
 
     // Serialize existing gallery images
