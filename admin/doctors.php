@@ -80,7 +80,7 @@ if (!hasAnyRole(['Administrator', 'Content Approver']) && !getUserAssignAllStatu
         <a href="?add=1" class="btn btn-sm btn-primary"><?= $editDoc ? '← Back' : 'Add Doctor' ?></a>
     </div>
     <?php if ($editDoc || isset($_GET['add'])): ?>
-    <form method="POST" action="" enctype="multipart/form-data" style="padding:20px;">
+    <form method="POST" action="" enctype="multipart/form-data" style="padding:20px;" id="doctor-form">
         <input type="hidden" name="doc_id" value="<?= $editDoc['id'] ?? 0 ?>">
         <div class="form-row">
             <div class="form-group">
@@ -119,7 +119,7 @@ if (!hasAnyRole(['Administrator', 'Content Approver']) && !getUserAssignAllStatu
         </div>
         <div class="form-group">
             <label>Profile/Biography</label>
-            <textarea name="profile" class="form-control" style="min-height:150px;"><?= sanitizeInput($editDoc['profile'] ?? '') ?></textarea>
+            <textarea name="profile" id="doctor-profile" class="form-control" style="min-height:150px;"><?= sanitizeInput($editDoc['profile'] ?? '') ?></textarea>
         </div>
         <div class="form-row">
             <div class="form-group">
@@ -169,4 +169,71 @@ if (!hasAnyRole(['Administrator', 'Content Approver']) && !getUserAssignAllStatu
     </table>
     <?php endif; ?>
 </div>
+
+<style>
+.editor-toolbar { display:flex; gap:4px; flex-wrap:wrap; padding:8px; background:#f8fafc; border:1px solid #cbd5e1; border-bottom:0; border-radius:6px 6px 0 0; }
+.editor-toolbar button { padding:5px 10px; background:#fff; border:1px solid #e2e8f0; border-radius:4px; cursor:pointer; font-size:13px; color:#475569; transition:all 0.2s; }
+.editor-toolbar button:hover { background:#f1f5f9; border-color:#94a3b8; }
+.editor-toolbar .sep { width:1px; background:#e2e8f0; margin:2px 4px; }
+.editor-content { min-height:200px; padding:12px; border:1px solid #cbd5e1; border-radius:0 0 6px 6px; font-size:14px; line-height:1.7; background:#fff; outline:none; }
+.editor-content:focus { border-color:#981c4e; box-shadow:0 0 0 3px rgba(152,28,78,0.12); }
+.editor-content ul, .editor-content ol { padding-left:24px; margin:8px 0; }
+.editor-content li { margin-bottom:4px; }
+.editor-content li > ul, .editor-content li > ol { margin:4px 0; }
+.editor-content p { margin-bottom:8px; }
+</style>
+
+<script>
+function makeEditor(textareaId) {
+    var ta = document.getElementById(textareaId);
+    if (!ta) return;
+    var wrapper = document.createElement('div');
+    wrapper.className = 'editor-wrapper';
+    ta.parentNode.insertBefore(wrapper, ta);
+    wrapper.appendChild(ta);
+    var toolbar = document.createElement('div');
+    toolbar.className = 'editor-toolbar';
+    toolbar.innerHTML =
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'bold\')" title="Bold"><b>B</b></button>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'italic\')" title="Italic"><i>I</i></button>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'underline\')" title="Underline"><u>U</u></button>' +
+        '<span class="sep"></span>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'insertUnorderedList\')" title="Bullet List"><i class="fas fa-list-ul"></i></button>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'insertOrderedList\')" title="Numbered List"><i class="fas fa-list-ol"></i></button>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'indent\')" title="Indent"><i class="fas fa-indent"></i></button>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="execCmd(\'outdent\')" title="Outdent"><i class="fas fa-outdent"></i></button>' +
+        '<span class="sep"></span>' +
+        '<button type="button" onmousedown="event.preventDefault()" onclick="insertLinkCmd()" title="Insert Link"><i class="fas fa-link"></i></button>';
+    wrapper.insertBefore(toolbar, ta);
+    var editor = document.createElement('div');
+    editor.className = 'editor-content';
+    editor.contentEditable = true;
+    editor.innerHTML = ta.value;
+    editor.dataset.target = textareaId;
+    editor.oninput = function() { document.getElementById(this.dataset.target).value = this.innerHTML; };
+    wrapper.insertBefore(editor, ta);
+    ta.style.display = 'none';
+}
+function syncAllEditors() {
+    document.querySelectorAll('.editor-content').forEach(function(el) {
+        var ta = document.getElementById(el.dataset.target);
+        if (ta) ta.value = el.innerHTML;
+    });
+}
+function execCmd(cmd) {
+    document.execCommand(cmd, false, null);
+    syncAllEditors();
+}
+function insertLinkCmd() {
+    var url = prompt('Enter URL:');
+    if (url) { document.execCommand('createLink', false, url); syncAllEditors(); }
+}
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('doctor-profile')) makeEditor('doctor-profile');
+});
+document.getElementById('doctor-form').addEventListener('submit', function() {
+    syncAllEditors();
+});
+</script>
+
 <?php require_once 'footer.php'; ?>
