@@ -542,6 +542,10 @@ ul {
   position: relative;
 }
 
+.card-body .btn-sm {
+  margin-top: auto;
+}
+
 .card-title {
   font-size: 1.1rem;
   font-weight: 600;
@@ -584,32 +588,52 @@ ul {
 }
 
 .card .btn-sm {
-  padding: 8px 20px;
+  padding: 10px 24px;
   background: var(--primary);
   color: var(--white);
-  border-radius: 6px;
+  border-radius: 50px;
   font-size: 0.82rem;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   border: none;
   cursor: pointer;
   font-weight: 500;
   align-self: flex-start;
-  transition: var(--transition);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+}
+
+.card .btn-sm::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card .btn-sm:hover::before {
+  left: 100%;
 }
 
 .card .btn-sm::after {
   content: '→';
+  font-size: 1.1em;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-block;
+  line-height: 1;
 }
 
 .card .btn-sm:hover {
   background: var(--primary-dark);
-  padding-right: 24px;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(152, 28, 78, 0.35);
 }
 
 .card .btn-sm:hover::after {
