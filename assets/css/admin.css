@@ -362,6 +362,7 @@ select.form-control {
     cursor: pointer;
     transition: all 0.3s;
     display: inline-block;
+    text-decoration: none;
 }
 
 .btn-primary {

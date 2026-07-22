@@ -620,7 +620,16 @@ if ($editSection) {
             <input type="text" name="section_subtitle" class="form-control" value="<?= sanitizeInput($editSection['subtitle'] ?? '') ?>" placeholder="Optional subtitle below the title">
         </div>
 
-        <!-- Paragraphs (text, image_text, text_image, cta) -->
+        <!-- Description Editor (Text layout only) -->
+        <div id="unit-text-description-section" class="unit-layout-field" style="margin-top:15px;display:none;">
+            <div class="form-group">
+                <label style="font-weight:600;color:#475569;">Description *</label>
+                <textarea name="section_description" id="unit-text-description" class="form-control" style="min-height:200px;"><?= sanitizeInput($existingParagraphs[0]['content'] ?? '') ?></textarea>
+                <small style="color:#94a3b8;">Use the toolbar to format text, add lists, and insert links.</small>
+            </div>
+        </div>
+
+        <!-- Paragraphs (image_text, text_image, cta) -->
         <div id="unit-paragraphs-section" class="unit-layout-field" style="margin-top:15px;">
             <label style="font-weight:600;color:#475569;">Content Paragraphs</label>
             <small style="color:#94a3b8;display:block;margin-bottom:10px;">Add multiple paragraphs of content. Each paragraph block is rendered separately.</small>
@@ -1027,7 +1036,10 @@ function insertLinkCmd() {
 function updateLayoutFields() {
     var type = document.getElementById('section-layout-select').value;
     document.querySelectorAll('.unit-layout-field').forEach(function(el) { el.style.display = 'none'; });
-    if (type === 'text' || type === 'image_text' || type === 'text_image' || type === 'cta') {
+    if (type === 'text') {
+        document.getElementById('unit-text-description-section').style.display = 'block';
+    }
+    if (type === 'image_text' || type === 'text_image' || type === 'cta') {
         document.getElementById('unit-paragraphs-section').style.display = 'block';
     }
     if (type === 'image_text' || type === 'text_image') {
@@ -1046,6 +1058,10 @@ function updateLayoutFields() {
 
 document.getElementById('section-layout-select').addEventListener('change', updateLayoutFields);
 updateLayoutFields();
+
+if (document.getElementById('unit-text-description')) {
+    makeEditor('unit-text-description');
+}
 
 // Auto-generate section key from title
 document.getElementById('section-title-input').addEventListener('input', function() {
@@ -1142,7 +1158,13 @@ document.getElementById('unit-form').addEventListener('submit', function() {
     var type = document.getElementById('section-layout-select').value;
 
     // Serialize paragraphs
-    if (type === 'text' || type === 'image_text' || type === 'text_image' || type === 'cta') {
+    if (type === 'text') {
+        var editorEl = document.querySelector('#unit-text-description-section .editor-content');
+        var descContent = editorEl ? editorEl.innerHTML.trim() : document.getElementById('unit-text-description').value.trim();
+        var paragraphs = descContent ? [{content: descContent}] : [];
+        document.getElementById('paragraphs_data').value = JSON.stringify(paragraphs);
+    }
+    if (type === 'image_text' || type === 'text_image' || type === 'cta') {
         var paragraphs = [];
         document.querySelectorAll('#paragraphs-container .paragraph-block').forEach(function(block) {
             var content = block.querySelector('textarea').value.trim();

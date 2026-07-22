@@ -180,7 +180,11 @@ foreach ($sections as $section):
                 <?php endif; ?>
                 <div class="dept-unit-content content-area">
                     <?php foreach ($paragraphs as $para): ?>
-                        <?= nl2p(sanitizeInput($para['content'] ?? '')) ?>
+                        <?php if ($secType === 'text'): ?>
+                            <?= nl2p($para['content'] ?? '') ?>
+                        <?php else: ?>
+                            <?= nl2p(sanitizeInput($para['content'] ?? '')) ?>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </div>
             </div>

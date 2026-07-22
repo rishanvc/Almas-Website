@@ -1391,6 +1391,7 @@ select.form-control {
 
 .content-area p {
   margin-bottom: 14px;
+    line-height: 1.9 !important;
 }
 
 /* ===== Badge ===== */
@@ -2385,7 +2386,7 @@ select.form-control {
 
 .dept-unit-content p {
   margin-bottom: 14px;
-  line-height: 1.8;
+  line-height: 1.9;
 }
 
 .dept-unit-content ul,
