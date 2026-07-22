@@ -22,7 +22,7 @@ $departments = getActiveDepartmentsPaginated($page, $perPage);
         <div class="row">
             <?php foreach ($departments as $dept): ?>
             <div class="col-4 animate-in">
-                <div class="card">
+                <div class="card department-card">
                     <?php if ($dept['image']): ?>
                     <div class="card-img-wrapper">
                         <img src="<?= SITE_URL . '/' . sanitizeInput($dept['image']) ?>" alt="<?= sanitizeInput($dept['department_name']) ?>" class="card-img">
@@ -31,7 +31,7 @@ $departments = getActiveDepartmentsPaginated($page, $perPage);
                     <div class="card-body">
                         <h3 class="card-title"><?= sanitizeInput($dept['department_name']) ?></h3>
                         <p class="card-text"><?= substr(strip_tags($dept['description']), 0, 150) ?>...</p>
-                        <a href="<?= SITE_URL ?>/department.php?id=<?= $dept['id'] ?>" class="btn btn-sm btn-primary">Explore</a>
+                        <a href="<?= SITE_URL ?>/department.php?id=<?= $dept['id'] ?>" class="btn-dept-explore">Explore &rarr;</a>
                     </div>
                 </div>
             </div>

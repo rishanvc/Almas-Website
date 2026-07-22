@@ -112,14 +112,16 @@ $settings = getSetting();
         <div class="row">
             <?php foreach (array_slice($departments, 0, 6) as $dept): ?>
             <div class="col-4">
-                <div class="card">
+                <div class="card department-card">
                     <?php if ($dept['image']): ?>
-                    <img src="<?= SITE_URL . '/' . sanitizeInput($dept['image']) ?>" alt="<?= sanitizeInput($dept['department_name']) ?>" class="card-img">
+                    <div class="card-img-wrapper">
+                        <img src="<?= SITE_URL . '/' . sanitizeInput($dept['image']) ?>" alt="<?= sanitizeInput($dept['department_name']) ?>" class="card-img">
+                    </div>
                     <?php endif; ?>
                     <div class="card-body">
                         <h3 class="card-title"><?= sanitizeInput($dept['department_name']) ?></h3>
-                        <p class="card-text"><?= substr(strip_tags($dept['description']), 0, 120) ?>...</p>
-                        <a href="<?= SITE_URL ?>/department.php?id=<?= $dept['id'] ?>" class="btn-sm"><i class="fas fa-arrow-right"></i> View Details</a>
+                        <p class="card-text"><?= substr(strip_tags($dept['description']), 0, 140) ?>...</p>
+                        <a href="<?= SITE_URL ?>/department.php?id=<?= $dept['id'] ?>" class="btn-dept-explore">Explore &rarr;</a>
                     </div>
                 </div>
             </div>
