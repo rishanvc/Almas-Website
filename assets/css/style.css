@@ -525,10 +525,26 @@ ul {
 
 .card-img {
   width: 100%;
-  height: 220px;
+  height: 260px;
   object-fit: cover;
   object-position: center;
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-img-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-img-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));
+  pointer-events: none;
 }
 
 .card:hover .card-img {

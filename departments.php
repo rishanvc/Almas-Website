@@ -24,12 +24,14 @@ $departments = getActiveDepartmentsPaginated($page, $perPage);
             <div class="col-4 animate-in">
                 <div class="card">
                     <?php if ($dept['image']): ?>
-                    <img src="<?= SITE_URL . '/' . sanitizeInput($dept['image']) ?>" alt="<?= sanitizeInput($dept['department_name']) ?>" class="card-img">
+                    <div class="card-img-wrapper">
+                        <img src="<?= SITE_URL . '/' . sanitizeInput($dept['image']) ?>" alt="<?= sanitizeInput($dept['department_name']) ?>" class="card-img">
+                    </div>
                     <?php endif; ?>
                     <div class="card-body">
                         <h3 class="card-title"><?= sanitizeInput($dept['department_name']) ?></h3>
                         <p class="card-text"><?= substr(strip_tags($dept['description']), 0, 150) ?>...</p>
-                        <a href="<?= SITE_URL ?>/department.php?id=<?= $dept['id'] ?>" class="btn btn-sm btn-primary">View Details</a>
+                        <a href="<?= SITE_URL ?>/department.php?id=<?= $dept['id'] ?>" class="btn btn-sm btn-primary">Explore</a>
                     </div>
                 </div>
             </div>
