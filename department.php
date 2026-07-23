@@ -303,14 +303,19 @@ if (count($doctors) > 0):
             <?php foreach ($doctors as $doc): ?>
             <div class="col-4">
                 <div class="card doctor-card">
-                    <?php if ($doc['photo']): ?>
-                    <img src="<?= SITE_URL . '/' . sanitizeInput($doc['photo']) ?>" alt="<?= sanitizeInput($doc['name']) ?>" class="card-img">
-                    <?php endif; ?>
-                    <div class="card-body">
-                        <h3 class="card-title"><?= sanitizeInput($doc['name']) ?></h3>
-                        <p class="designation"><?= sanitizeInput($doc['designation'] ?? '') ?></p>
-                        <p class="card-text"><?= sanitizeInput($doc['specialization']) ?></p>
-                        <a href="<?= SITE_URL ?>/doctor.php?id=<?= $doc['id'] ?>" class="btn btn-sm"><i class="fas fa-user-md"></i> View Profile</a>
+                    <div class="doctor-card-media">
+                        <?php if ($doc['photo']): ?>
+                        <img src="<?= SITE_URL . '/' . sanitizeInput($doc['photo']) ?>" alt="<?= sanitizeInput($doc['name']) ?>" class="card-img">
+                        <?php else: ?>
+                        <div class="card-img doctor-card-placeholder"><i class="fas fa-user-md"></i></div>
+                        <?php endif; ?>
+                        <div class="doctor-card-overlay">
+                            <h3 class="card-title"><?= sanitizeInput($doc['name']) ?></h3>
+                            <?php if ($doc['designation']): ?>
+                            <p class="designation"><?= sanitizeInput($doc['designation']) ?></p>
+                            <?php endif; ?>
+                            <a href="<?= SITE_URL ?>/doctor.php?id=<?= $doc['id'] ?>" class="btn-sm"><span>View Profile</span><i class="fas fa-arrow-right"></i></a>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -792,25 +792,134 @@ ul {
   box-shadow: 0 6px 16px rgba(152, 28, 78, 0.3) !important;
 }
 
-/* ===== Doctor Card ===== */
+/* ===== Doctor Profile Card (Premium Glassmorphism) ===== */
 .doctor-card {
-  text-align: center;
+  border-radius: 28px;
+  border: none;
+  background: var(--white);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.doctor-card::before {
+  display: none;
+}
+
+.doctor-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+}
+
+.doctor-card-media {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
 }
 
 .doctor-card .card-img {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  margin: 28px auto 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border: 4px solid #f5f5f5;
+  object-position: top center;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.doctor-card:hover .card-img {
+  transform: scale(1.05);
+}
+
+.doctor-card-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+  color: #ccc;
+  font-size: 64px;
+}
+
+.doctor-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 28px 24px 24px;
+  background: linear-gradient(to top,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.45) 60%,
+    rgba(0, 0, 0, 0.08) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.doctor-card .card-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+  line-height: 1.3;
+  letter-spacing: 0.2px;
+}
+
+.doctor-card .card-title::after {
+  display: none;
 }
 
 .doctor-card .designation {
-  color: var(--primary);
+  color: #E8649A;
   font-weight: 600;
   font-size: 0.85rem;
-  margin-bottom: 4px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.doctor-card .btn-sm {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: 8px;
+  padding: 10px 28px;
+  background: linear-gradient(135deg, #9C1C57, #B32768);
+  color: var(--white);
+  border: none;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(156, 28, 87, 0.35);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+}
+
+.doctor-card .btn-sm::before {
+  display: none;
+}
+
+.doctor-card .btn-sm::after {
+  display: none;
+}
+
+.doctor-card .btn-sm i {
+  font-size: 0.72rem;
+  transition: transform 0.3s ease;
+}
+
+.doctor-card .btn-sm:hover {
+  background: linear-gradient(135deg, #B32768, #D13A80);
+  box-shadow: 0 6px 20px rgba(156, 28, 87, 0.5);
+  transform: translateY(-1px);
+}
+
+.doctor-card .btn-sm:hover i {
+  transform: translateX(3px);
 }
 
 /* ===== Branch Card ===== */
@@ -2184,21 +2293,33 @@ select.form-control {
 }
 
 .dept-section-doctors .doctor-card {
-  text-align: center;
+  border-radius: 28px;
+  border: none;
+  background: var(--white);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.dept-section-doctors .doctor-card-media {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  overflow: hidden;
 }
 
 .dept-section-doctors .doctor-card .card-img {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  margin: 20px auto 0;
+  object-position: top center;
 }
 
 .dept-section-doctors .designation {
-  color: var(--primary);
+  color: #E8649A;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
   margin-bottom: 8px;
 }
 
