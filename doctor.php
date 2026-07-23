@@ -11,49 +11,64 @@ mysqli_stmt_close($stmt);
 if (!$doc) { header('Location: doctors.php'); exit; }
 $pageTitle = sanitizeInput($doc['name']);
 ?>
-<section class="page-header">
-    <div class="container">
-        <h1>Doctor <strong>Profile</strong></h1>
-        <p>Detailed profile of <?= sanitizeInput($doc['name']) ?></p>
-    </div>
-</section>
 <section class="section">
     <div class="container">
-        <div class="row">
-            <div class="col-4">
+        <div class="doctor-profile-card">
+            <div class="doctor-profile-photo">
                 <?php if ($doc['photo']): ?>
-                <img src="<?= SITE_URL . '/' . sanitizeInput($doc['photo']) ?>" alt="<?= sanitizeInput($doc['name']) ?>" class="detail-img">
+                <img src="<?= SITE_URL . '/' . sanitizeInput($doc['photo']) ?>" alt="<?= sanitizeInput($doc['name']) ?>">
+                <?php else: ?>
+                <div class="doctor-profile-photo-placeholder"><i class="fas fa-user-md"></i></div>
                 <?php endif; ?>
             </div>
-            <div class="col-8">
-                <h2><?= sanitizeInput($doc['name']) ?></h2>
-                <p class="designation"><?= sanitizeInput($doc['designation'] ?? '') ?></p>
-                <hr>
-                <table class="table">
-                    <tr>
-                        <th><i class="fas fa-building"></i> Department</th>
-                        <td><?= sanitizeInput($doc['department_name'] ?? '') ?></td>
-                    </tr>
-                    <tr>
-                        <th><i class="fas fa-stethoscope"></i> Specialization</th>
-                        <td><?= sanitizeInput($doc['specialization']) ?></td>
-                    </tr>
-                    <tr>
-                        <th><i class="fas fa-graduation-cap"></i> Qualification</th>
-                        <td><?= sanitizeInput($doc['qualification']) ?></td>
-                    </tr>
-                    <?php if ($doc['experience']): ?>
-                    <tr>
-                        <th><i class="fas fa-briefcase"></i> Experience</th>
-                        <td><?= sanitizeInput($doc['experience']) ?></td>
-                    </tr>
+            <div class="doctor-profile-info">
+                <div class="doctor-profile-header">
+                    <h1 class="doctor-profile-name"><?= sanitizeInput($doc['name']) ?></h1>
+                    <?php if ($doc['designation']): ?>
+                    <p class="doctor-profile-designation"><?= sanitizeInput($doc['designation']) ?></p>
                     <?php endif; ?>
-                </table>
+                </div>
+                <div class="doctor-profile-details">
+                    <div class="doctor-detail-item">
+                        <div class="doctor-detail-icon"><i class="fas fa-building"></i></div>
+                        <div>
+                            <span class="doctor-detail-label">Department</span>
+                            <span class="doctor-detail-value"><?= sanitizeInput($doc['department_name'] ?? 'N/A') ?></span>
+                        </div>
+                    </div>
+                    <div class="doctor-detail-item">
+                        <div class="doctor-detail-icon"><i class="fas fa-stethoscope"></i></div>
+                        <div>
+                            <span class="doctor-detail-label">Specialization</span>
+                            <span class="doctor-detail-value"><?= sanitizeInput($doc['specialization']) ?></span>
+                        </div>
+                    </div>
+                    <div class="doctor-detail-item">
+                        <div class="doctor-detail-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <div>
+                            <span class="doctor-detail-label">Qualification</span>
+                            <span class="doctor-detail-value"><?= sanitizeInput($doc['qualification']) ?></span>
+                        </div>
+                    </div>
+                    <?php if ($doc['experience']): ?>
+                    <div class="doctor-detail-item">
+                        <div class="doctor-detail-icon"><i class="fas fa-briefcase"></i></div>
+                        <div>
+                            <span class="doctor-detail-label">Experience</span>
+                            <span class="doctor-detail-value"><?= sanitizeInput($doc['experience']) ?></span>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </div>
                 <?php if ($doc['profile']): ?>
-                <hr>
-                <div class="content-area"><?= $doc['profile'] ?></div>
+                <div class="doctor-profile-bio">
+                    <h3>About</h3>
+                    <div class="content-area"><?= $doc['profile'] ?></div>
+                </div>
                 <?php endif; ?>
-                <a href="<?= SITE_URL ?>/appointment.php?doctor=<?= $doc['id'] ?>" class="btn btn-primary"><i class="fas fa-calendar-check"></i> Book Appointment</a>
+                <a href="<?= SITE_URL ?>/appointment.php?doctor=<?= $doc['id'] ?>" class="btn btn-primary btn-lg doctor-profile-cta">
+                    <i class="fas fa-calendar-check"></i> Book Appointment
+                </a>
             </div>
         </div>
     </div>

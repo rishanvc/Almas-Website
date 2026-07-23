@@ -14,14 +14,15 @@ $departments = getActiveDepartments();
 </section>
 <section class="section">
     <div class="container">
-        <form method="GET" class="text-center mb-30">
-            <i class="fas fa-filter"></i>
-            <select name="department" class="form-control d-inline-block w-auto" onchange="this.form.submit()">
+        <form method="GET" class="doctor-filter-bar">
+            <i class="fas fa-sliders-h doctor-filter-icon"></i>
+            <select name="department" class="doctor-filter-select" onchange="this.form.submit()">
                 <option value="">All Departments</option>
                 <?php foreach ($departments as $dept): ?>
                 <option value="<?= $dept['id'] ?>" <?= $departmentId == $dept['id'] ? 'selected' : '' ?>><?= sanitizeInput($dept['department_name']) ?></option>
                 <?php endforeach; ?>
             </select>
+            <i class="fas fa-chevron-down doctor-filter-chevron"></i>
         </form>
         <div class="row">
             <?php if (count($doctors) > 0): ?>
