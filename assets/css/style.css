@@ -3058,7 +3058,8 @@ select.form-control {
 
 .about-featured-img {
   float: right;
-  width: 420px;
+  width: 534px;
+  max-width: 100%;
   margin: 0 0 20px 32px;
   border-radius: var(--br);
   overflow: hidden;
@@ -3067,7 +3068,8 @@ select.form-control {
 
 .about-featured-img img {
   width: 100%;
-  height: auto;
+  max-height: 550px;
+  object-fit: cover;
   display: block;
 }
 
@@ -3179,7 +3181,8 @@ select.form-control {
 }
 
 .about-section-img {
-  width: 340px;
+  width: 534px;
+  max-width: 100%;
   flex-shrink: 0;
   border-radius: var(--br);
   overflow: hidden;
@@ -3194,7 +3197,8 @@ select.form-control {
 
 .about-section-img img {
   width: 100%;
-  height: auto;
+  max-height: 550px;
+  object-fit: cover;
   display: block;
 }
 
@@ -3202,7 +3206,7 @@ select.form-control {
   .about-featured-img {
     float: none;
     width: 100%;
-    max-width: 540px;
+    max-width: 400px;
     margin: 0 auto 24px;
   }
 
@@ -3218,7 +3222,7 @@ select.form-control {
 
   .about-section-img {
     width: 100%;
-    max-width: 500px;
+    max-width: 380px;
   }
 
   .about-vision-block .about-section-inner {

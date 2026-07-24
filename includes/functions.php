@@ -79,6 +79,41 @@ function getActiveDoctors($departmentId = null) {
     return $data;
 }
 
+function getActiveDoctorsPaginated($departmentId = null, $page = 1, $perPage = 9) {
+    global $conn;
+    $offset = ($page - 1) * $perPage;
+    if ($departmentId) {
+        $stmt = mysqli_prepare($conn, "SELECT d.*, dep.department_name FROM doctors d LEFT JOIN departments dep ON d.department_id = dep.id WHERE d.status = 'Active' AND d.department_id = ? ORDER BY d.name LIMIT ? OFFSET ?");
+        mysqli_stmt_bind_param($stmt, 'iii', $departmentId, $perPage, $offset);
+    } else {
+        $stmt = mysqli_prepare($conn, "SELECT d.*, dep.department_name FROM doctors d LEFT JOIN departments dep ON d.department_id = dep.id WHERE d.status = 'Active' ORDER BY d.name LIMIT ? OFFSET ?");
+        mysqli_stmt_bind_param($stmt, 'ii', $perPage, $offset);
+    }
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $data = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[] = $row;
+    }
+    mysqli_stmt_close($stmt);
+    return $data;
+}
+
+function countActiveDoctors($departmentId = null) {
+    global $conn;
+    if ($departmentId) {
+        $stmt = mysqli_prepare($conn, "SELECT COUNT(*) as total FROM doctors WHERE status = 'Active' AND department_id = ?");
+        mysqli_stmt_bind_param($stmt, 'i', $departmentId);
+    } else {
+        $stmt = mysqli_prepare($conn, "SELECT COUNT(*) as total FROM doctors WHERE status = 'Active'");
+    }
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+    return (int)$row['total'];
+}
+
 function getDepartmentFacilities($departmentId) {
     global $conn;
     $stmt = mysqli_prepare($conn, "SELECT * FROM department_facilities WHERE department_id = ?");

@@ -3,8 +3,18 @@ $pageTitle = 'Our Doctors';
 $metaDesc = 'Meet our team of experienced and qualified doctors at Almas Hospital.';
 require_once 'includes/header.php';
 $departmentId = isset($_GET['department']) ? (int)$_GET['department'] : null;
-$doctors = getActiveDoctors($departmentId);
+$perPage = 9;
+$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$totalDoctors = countActiveDoctors($departmentId);
+$totalPages = max(1, ceil($totalDoctors / $perPage));
+$page = min($page, $totalPages);
+$doctors = getActiveDoctorsPaginated($departmentId, $page, $perPage);
 $departments = getActiveDepartments();
+
+function buildQueryString($overrides) {
+    $params = array_filter(array_merge($_GET, $overrides));
+    return http_build_query($params);
+}
 ?>
 <section class="page-header">
     <div class="container">
@@ -52,6 +62,34 @@ $departments = getActiveDepartments();
                 </div>
             <?php endif; ?>
         </div>
+        <?php if ($totalPages > 1): ?>
+        <div class="pagination">
+            <?php if ($page > 1): ?>
+            <a href="?<?= buildQueryString(['page' => $page - 1]) ?>"><i class="fas fa-chevron-left"></i></a>
+            <?php endif; ?>
+            <?php
+            $start = max(1, $page - 2);
+            $end = min($totalPages, $page + 2);
+            if ($start > 1): ?>
+            <a href="?<?= buildQueryString(['page' => 1]) ?>">1</a>
+            <?php if ($start > 2): ?>
+            <span>...</span>
+            <?php endif; ?>
+            <?php endif; ?>
+            <?php for ($i = $start; $i <= $end; $i++): ?>
+            <a href="?<?= buildQueryString(['page' => $i]) ?>" class="<?= $i == $page ? 'active' : '' ?>"><?= $i ?></a>
+            <?php endfor; ?>
+            <?php if ($end < $totalPages): ?>
+            <?php if ($end < $totalPages - 1): ?>
+            <span>...</span>
+            <?php endif; ?>
+            <a href="?<?= buildQueryString(['page' => $totalPages]) ?>"><?= $totalPages ?></a>
+            <?php endif; ?>
+            <?php if ($page < $totalPages): ?>
+            <a href="?<?= buildQueryString(['page' => $page + 1]) ?>"><i class="fas fa-chevron-right"></i></a>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
     </div>
 </section>
 <?php require_once 'includes/footer.php'; ?>
