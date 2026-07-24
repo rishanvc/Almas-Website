@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 case 'doctor': $table = 'doctors'; break;
                 case 'blog': $table = 'blogs'; break;
                 case 'department_faq': $table = 'department_faqs'; break;
+                case 'home_care': $table = 'home_care'; break;
             }
             if ($table) {
                 $approvedById = $_SESSION['user_id'];
@@ -36,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     } else {
                         mysqli_query($conn, "UPDATE $table SET status='Published', approved_by=$approvedById WHERE id={$req['entity_id']}");
                     }
-                } elseif (in_array($req['entity_type'], ['department', 'doctor', 'blog', 'career', 'branch'])) {
+                } elseif (in_array($req['entity_type'], ['department', 'doctor', 'blog', 'career', 'branch', 'home_care'])) {
                     mysqli_query($conn, "UPDATE $table SET approved_by=$approvedById WHERE id={$req['entity_id']}");
                 }
             }
@@ -115,6 +116,9 @@ $historyResult = mysqli_query($conn, "SELECT ar.*, u1.name as requester, u2.name
                                 $entityData = mysqli_fetch_assoc($res);
                             } elseif ($row['entity_type'] == 'department_faq') {
                                 $res = mysqli_query($conn, "SELECT f.*, d.department_name FROM department_faqs f JOIN departments d ON f.department_id = d.id WHERE f.id = {$row['entity_id']}");
+                                $entityData = mysqli_fetch_assoc($res);
+                            } elseif ($row['entity_type'] == 'home_care') {
+                                $res = mysqli_query($conn, "SELECT * FROM home_care WHERE id = {$row['entity_id']}");
                                 $entityData = mysqli_fetch_assoc($res);
                             }
                             if ($entityData): ?>

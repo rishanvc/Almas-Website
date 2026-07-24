@@ -35,8 +35,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <a href="<?= SITE_URL ?>/admin/content.php" class="<?= $currentPage == 'content.php' ? 'active' : '' ?>"><i class="fas fa-file-lines"></i> Website Content</a>
         <a href="<?= SITE_URL ?>/admin/departments.php" class="<?= $currentPage == 'departments.php' ? 'active' : '' ?>"><i class="fas fa-hospital"></i> Departments</a>
         <a href="<?= SITE_URL ?>/admin/doctors.php" class="<?= $currentPage == 'doctors.php' ? 'active' : '' ?>"><i class="fas fa-user-doctor"></i> Doctors</a>
+        <a href="<?= SITE_URL ?>/admin/homecare.php" class="<?= $currentPage == 'homecare.php' ? 'active' : '' ?>"><i class="fas fa-house-medical"></i> Home Care</a>
         <a href="<?= SITE_URL ?>/admin/appointments.php" class="<?= $currentPage == 'appointments.php' ? 'active' : '' ?>"><i class="fas fa-calendar-check"></i> Appointments</a>
-        <a href="<?= SITE_URL ?>/admin/packages.php" class="<?= $currentPage == 'packages.php' ? 'active' : '' ?>"><i class="fas fa-box-open"></i> Packages</a>
+        
         <a href="<?= SITE_URL ?>/admin/careers.php" class="<?= $currentPage == 'careers.php' ? 'active' : '' ?>"><i class="fas fa-briefcase"></i> Careers</a>
         <a href="<?= SITE_URL ?>/admin/blogs.php" class="<?= $currentPage == 'blogs.php' ? 'active' : '' ?>"><i class="fas fa-blog"></i> Blogs</a>
         <a href="<?= SITE_URL ?>/admin/branches.php" class="<?= $currentPage == 'branches.php' ? 'active' : '' ?>"><i class="fas fa-building"></i> Branches</a>

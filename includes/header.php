@@ -37,7 +37,8 @@
             <a href="<?= SITE_URL ?>/about.php" class="<?= basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : '' ?>">About</a>
             <a href="<?= SITE_URL ?>/departments.php" class="<?= basename($_SERVER['PHP_SELF']) == 'departments.php' || basename($_SERVER['PHP_SELF']) == 'department.php' ? 'active' : '' ?>">Departments</a>
             <a href="<?= SITE_URL ?>/doctors.php" class="<?= basename($_SERVER['PHP_SELF']) == 'doctors.php' || basename($_SERVER['PHP_SELF']) == 'doctor.php' ? 'active' : '' ?>">Doctors</a>
-            <a href="<?= SITE_URL ?>/packages.php" class="<?= basename($_SERVER['PHP_SELF']) == 'packages.php' ? 'active' : '' ?>">Packages</a>
+            <a href="<?= SITE_URL ?>/homecare.php" class="<?= basename($_SERVER['PHP_SELF']) == 'homecare.php' ? 'active' : '' ?>">Home Care</a>
+            
             <a href="<?= SITE_URL ?>/blogs.php" class="<?= basename($_SERVER['PHP_SELF']) == 'blogs.php' ? 'active' : '' ?>">Blogs</a>
             <a href="<?= SITE_URL ?>/careers.php" class="<?= basename($_SERVER['PHP_SELF']) == 'careers.php' ? 'active' : '' ?>">Careers</a>
             <a href="<?= SITE_URL ?>/branches.php" class="<?= basename($_SERVER['PHP_SELF']) == 'branches.php' ? 'active' : '' ?>">Branches</a>

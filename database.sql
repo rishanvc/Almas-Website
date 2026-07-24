@@ -347,4 +347,25 @@ CREATE TABLE IF NOT EXISTS department_faqs (
 
 -- 5. Add blog to approval_requests entity_type ENUM
 ALTER TABLE approval_requests
-  MODIFY COLUMN entity_type ENUM('website_content','department','department_facility','department_section','doctor','gallery','patient_story','career','branch','website_setting','department_faq','blog') NOT NULL;
+  MODIFY COLUMN entity_type ENUM('website_content','department','department_facility','department_section','doctor','gallery','patient_story','career','branch','website_setting','department_faq','blog','home_care') NOT NULL;
+
+-- =============================================
+-- Home Care Module
+-- =============================================
+CREATE TABLE IF NOT EXISTS home_care (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    heading VARCHAR(255) NULL,
+    description LONGTEXT NULL,
+    image VARCHAR(255) NULL,
+    list_items JSON NULL,
+    additional_text LONGTEXT NULL,
+    status ENUM('Active','Inactive') DEFAULT 'Active',
+    created_by INT NULL,
+    approved_by INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (approved_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE INDEX idx_home_care_status ON home_care(status);
