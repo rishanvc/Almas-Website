@@ -26,13 +26,6 @@ $pageTitle = sanitizeInput($doc['name']);
                 <a href="<?= SITE_URL ?>/doctors.php" class="doctor-back-link">
                     <i class="fas fa-arrow-left"></i> Back to Doctors
                 </a>
-                <nav class="doctor-breadcrumb">
-                    <a href="<?= SITE_URL ?>/">Home</a>
-                    <span class="sep">/</span>
-                    <a href="<?= SITE_URL ?>/doctors.php">Doctors</a>
-                    <span class="sep">/</span>
-                    <span class="current"><?= sanitizeInput($doc['name']) ?></span>
-                </nav>
             </div>
         </div>
     </div>
